@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Research Companion — Competitor & Location Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1c2733; --muted:#5b6b79; --faint:#93a1ad;
+  --paper:#f5f4f0; --card:#ffffff; --border:#e3e1da; --border-strong:#c9c6bc;
+  --accent:#14606b; --accent-dark:#0c4650; --accent-bg:#e7f0f1; --accent-line:#bcd6d9;
+  --good:#1d7a5f; --good-bg:#e8f4ee; --warn:#a5741a; --warn-bg:#faf2df;
+  --bad:#a33636; --bad-bg:#fbecec;
+  --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans',sans-serif; --disp:'Fraunces',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.65}
+.wrap{max-width:1140px;margin:0 auto;padding:0 28px 90px}
+header{background:var(--card);border-bottom:1px solid var(--border)}
+.head-inner{max-width:1140px;margin:0 auto;padding:32px 28px 24px}
+.brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.brand h1{font-family:var(--disp);font-size:27px;font-weight:600;letter-spacing:-.01em;color:var(--accent-dark)}
+.brand .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-line);padding:3px 10px;border-radius:99px}
+.purpose{color:var(--muted);font-size:14px;margin-top:10px;max-width:820px}
+.privacy{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:13px;color:var(--good);background:var(--good-bg);border:1px solid #cfe6da;padding:9px 14px;border-radius:8px;max-width:820px}
+.layout{display:grid;grid-template-columns:210px 1fr;gap:44px;margin-top:36px}
+@media(max-width:860px){.layout{grid-template-columns:1fr;gap:16px}.rail{flex-direction:row!important;overflow-x:auto;position:static!important}}
+.rail{position:sticky;top:24px;align-self:start;display:flex;flex-direction:column;gap:4px}
+.rail button{position:relative;display:flex;gap:12px;align-items:center;border:none;background:none;text-align:left;padding:11px 12px;border-radius:8px;cursor:pointer;font-family:var(--sans);font-size:13.5px;color:var(--muted);white-space:nowrap;z-index:1}
+.rail button.active{color:var(--accent-dark);font-weight:600}
+.rail button:disabled{opacity:.4;cursor:not-allowed}
+.rail .n{font-family:var(--mono);font-size:11px;width:22px;height:22px;background:var(--paper);border:1.5px solid var(--border-strong);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.rail button.active .n{border-color:var(--accent);color:var(--accent);background:var(--card);box-shadow:0 0 0 3px var(--accent-bg)}
+.rail button.done .n{background:var(--accent);border-color:var(--accent);color:#fff}
+.rail .sep{border-top:1px solid var(--border);margin:8px 12px}
+.panel{display:none}.panel.show{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:22px}
+h2{font-family:var(--disp);font-size:19px;font-weight:600;margin-bottom:5px;color:var(--ink)}
+h4{font-size:13.5px;font-weight:600;margin:18px 0 6px}
+.sub{color:var(--muted);font-size:13.5px;margin-bottom:18px;max-width:680px}
+label{display:block;font-size:12.5px;font-weight:600;letter-spacing:.02em;margin:16px 0 6px;color:var(--ink)}
+textarea,input[type=text],input[type=password],input[type=number],select{width:100%;border:1px solid var(--border-strong);border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:14px;color:var(--ink);background:#fdfdfc;transition:border .12s}
+textarea:hover,input:hover{border-color:var(--faint)}
+textarea:focus,input:focus,select:focus{outline:3px solid var(--accent-bg);border-color:var(--accent)}
+textarea.mono{font-family:var(--mono);font-size:12.5px;line-height:1.7}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-family:var(--sans);font-weight:600;font-size:14px;padding:10px 20px;border-radius:8px;cursor:pointer;transition:all .12s}
+.btn:hover{background:var(--accent-dark);border-color:var(--accent-dark)}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:var(--card);color:var(--accent)}
+.btn.ghost:hover{background:var(--accent-bg)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm{padding:6px 12px;font-size:12.5px}
+.btn-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;align-items:center}
+.note{font-size:12.5px;color:var(--faint);margin-top:8px}
+.pill{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.pill.found{background:var(--good-bg);color:var(--good);border:1px solid #cfe6da}
+.pill.na{background:#f1f0ec;color:var(--faint);border:1px solid var(--border)}
+.pill.warn{background:var(--warn-bg);color:var(--warn);border:1px solid #ecd9ae}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:14px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);font-weight:600;padding:8px 10px;border-bottom:1.5px solid var(--border)}
+td{padding:10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:#fafaf8}
+td a{color:var(--accent);font-weight:500}
+.dist{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 4px}
+.stat{background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:10px 16px;min-width:120px}
+.stat .v{font-family:var(--mono);font-size:19px;font-weight:500;color:var(--accent-dark)}
+.stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:600}
+#map{width:100%;height:440px;border-radius:10px;border:1px solid var(--border);margin-top:16px;background:var(--paper)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:10px}
+.legend span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.legend .l-sub::before{background:#c0392b}
+.legend .l-comp::before{background:#17212b}
+.legend .l-route::before{width:22px;height:4px;border-radius:3px;background:#1769aa;vertical-align:middle;margin-bottom:2px}
+.route-status{font-size:12px;color:var(--muted);margin-top:8px}
+.gmap-callout{position:absolute;z-index:10;transform:translate(15px,-50%);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(255,255,255,.94);border:1px solid #d8dce0;border-radius:4px;padding:3px 7px;font:600 11px/1.25 var(--sans);color:#17212b;box-shadow:0 1px 3px rgba(20,34,48,.18);pointer-events:none}
+.gmap-callout.left{transform:translate(calc(-100% - 15px),-50%)}
+.gmap-callout.subject{border-color:#d8a8a3;color:#8f2a22}
+.map-figure{margin:10px 0 16px;page-break-inside:avoid}
+.map-canvas-wrap{position:relative;overflow:hidden;border:1px solid #ccd3da;border-radius:6px;background:#eef1f2}
+.map-figure img{display:block;width:100%;border:0!important;border-radius:0!important;margin:0!important}
+.map-print-callout{position:absolute;z-index:2;transform:translate(13px,-50%);width:max-content;max-width:190px;background:rgba(255,255,255,.94);border:1px solid #cfd5da;border-radius:4px;padding:3px 6px;color:#17212b;font-size:9px;line-height:1.2;box-shadow:0 1px 3px rgba(20,34,48,.2)}
+.map-print-callout.left{transform:translate(calc(-100% - 13px),-50%)}
+.map-print-callout b{display:block;font-size:9.5px}
+.map-print-callout span{display:block;color:#66737f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.map-route-summary{display:flex;align-items:center;gap:8px;margin:7px 0 8px;font-size:11px;color:#5b6b79}
+.map-route-summary::before{content:'';width:24px;height:4px;border-radius:3px;background:#1769aa;flex:none}
+.map-route-summary.no-route::before{display:none}
+.map-facts{margin:7px 0 5px;font-size:10.5px;color:#344453;background:#f2f5f6;border:1px solid #dce2e5;border-radius:5px;padding:6px 8px}
+.map-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;margin-top:8px}
+.map-key-item{display:flex;gap:7px;align-items:flex-start;min-width:0;font-size:10.5px;line-height:1.35;color:#344453}
+.map-key-item .map-badge{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;background:#17212b;color:#fff;font:600 10px/1 var(--sans)}
+.map-key-item.subject .map-badge{background:#c0392b}
+.map-key-item b{display:block;color:#17212b;font-size:10.5px}
+.map-key-item small{display:block;color:#6c7883;font-size:9.5px}
+.map-omitted{margin-top:7px;font-size:10px;color:#7a5b22;background:#faf2df;border:1px solid #ecd9ae;border-radius:5px;padding:5px 8px}
+@media(max-width:640px){.map-key{grid-template-columns:1fr}}
+.comp-card{border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:16px;background:var(--card)}
+.comp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.comp-head h3{font-size:15.5px;font-weight:600}
+.steps{font-size:13px;color:var(--accent-dark);background:var(--accent-bg);border:1px solid var(--accent-line);border-radius:8px;padding:10px 14px;margin:14px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;margin-top:14px}
+.field{border:1px solid var(--border);border-radius:8px;padding:9px 11px;background:#fdfdfc}
+.field .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:600}
+.field input{border:none;background:none;padding:2px 0;font-size:13.5px;width:100%}
+.field input:focus{outline:none}
+.field .src{font-size:10px;color:var(--faint);font-family:var(--mono)}
+.progress{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.out{font-family:var(--mono);font-size:12px;white-space:pre-wrap;background:#fbfbf9;border:1px solid var(--border);border-radius:10px;padding:18px;max-height:520px;overflow:auto;line-height:1.75}
+.err{color:var(--bad);background:var(--bad-bg);border:1px solid #eccaca;border-radius:8px;padding:10px 14px;font-size:13.5px;margin-top:12px;display:none}
+.ok{color:var(--good);background:var(--good-bg);border:1px solid #cfe6da;border-radius:8px;padding:10px 14px;font-size:13.5px;margin-top:12px;display:none}
+.addr-block{border-left:3px solid var(--accent);padding-left:16px;margin:24px 0 8px}
+.addr-block h3{font-size:14.5px;font-weight:600}
+.addr-block .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+details{border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:14px;background:#fbfbf9}
+summary{cursor:pointer;font-weight:600;font-size:13.5px;color:var(--accent-dark)}
+details ol{margin:12px 0 4px 20px;font-size:13.5px;color:var(--muted)}
+details li{margin-bottom:6px}
+footer{margin-top:56px;font-size:12px;color:var(--faint);border-top:1px solid var(--border);padding-top:18px;line-height:1.8}
+.keyrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.keyrow input[type=password]{flex:1;min-width:240px}
+.chk{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);font-weight:400;margin-top:8px}
+.chk input{width:auto}
+.srcline{font-size:12.5px;color:var(--muted);margin:6px 0}
+.srcline a{color:var(--accent)}
+#reportView{display:none}
+body.printing .layout,body.printing header,body.printing footer{display:none!important}
+body.printing #reportView{display:block}
+#reportView .rv{max-width:860px;margin:0 auto;padding:40px 20px;font-family:var(--sans);color:#1c2733}
+#reportView h1{font-family:var(--disp);font-size:26px;color:#0c4650;margin-bottom:4px}
+#reportView h2{font-family:var(--disp);font-size:19px;color:#0c4650;margin:28px 0 8px;border-bottom:2px solid #14606b;padding-bottom:4px;page-break-after:avoid}
+#reportView h3{font-size:15px;margin:18px 0 6px;page-break-after:avoid}
+#reportView p{font-size:13.5px;line-height:1.7;margin-bottom:10px}
+#reportView .meta{font-family:var(--mono);font-size:11px;color:#5b6b79;margin-bottom:16px}
+#reportView img.mapimg{width:100%;border:1px solid #dde;border-radius:6px;margin:10px 0;page-break-inside:avoid}
+#reportView table{width:100%;border-collapse:collapse;font-size:11.5px;margin:8px 0 14px;page-break-inside:auto}
+#reportView th{text-align:left;border-bottom:1.5px solid #14606b;padding:5px 6px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#5b6b79}
+#reportView td{border-bottom:1px solid #e3e1da;padding:5px 6px;vertical-align:top}
+#reportView .rawx{font-family:var(--mono);font-size:9.5px;white-space:pre-wrap;background:#f7f7f4;border:1px solid #e3e1da;border-radius:6px;padding:10px;margin:8px 0}
+#reportView .closebar{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:12px 20px;display:flex;gap:12px;z-index:5}
+@media print{#reportView .closebar{display:none} body{background:#fff}}
+
+/* printable report */
+.report{display:none}
+.print-report .report{display:block;font-family:var(--sans);color:#1c2733;max-width:820px;margin:0 auto;padding:20px}
+.print-report header,.print-report .wrap{display:none}
+.report h1{font-family:var(--disp);font-size:26px;margin:6px 0 10px;color:#0c4650}
+.report h2{font-family:var(--disp);font-size:19px;margin:26px 0 10px;color:#0c4650;border-bottom:1.5px solid #dde;padding-bottom:6px}
+.report h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;color:#14606b}
+.report h4{font-size:14px;margin:14px 0 6px}
+.report p{font-size:12.5px;line-height:1.7;margin-bottom:8px}
+.report .rp-kicker{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#14606b}
+.report .rp-meta{color:#5b6b79}
+.report .rp-note{color:#5b6b79;font-style:italic;font-size:11.5px}
+.report .rp-map{width:100%;border:1px solid #ccc;border-radius:6px;margin:8px 0 2px}
+.report .rp-cap{font-size:10.5px;color:#93a1ad;margin-bottom:10px}
+.report .rp-comp{border-left:2.5px solid #bcd6d9;padding-left:12px;margin:12px 0}
+.report table{width:100%;border-collapse:collapse;font-size:10px;margin-top:10px}
+.report th,.report td{border:1px solid #ddd;padding:5px 7px;text-align:left;vertical-align:top}
+.report th{background:#f0f4f4}
+.report pre{white-space:pre-wrap;font-family:var(--mono);font-size:9px;background:#f8f8f6;border:1px solid #e3e1da;border-radius:6px;padding:10px;max-height:none;line-height:1.5;margin-bottom:10px}
+.report .rp-prop{page-break-before:auto}
+@media print{
+  body{background:#fff}
+  body:not(.print-report) .report{display:none}
+  .print-report .report{display:block}
+  .report .rp-prop{page-break-before:always}
+  .report .rp-appendix{page-break-before:always}
+  .report a{color:#14606b;text-decoration:none}
+}
+
+/* V4 workspace interface */
+:root{
+  --ink:#14252d;--muted:#60737b;--faint:#91a0a6;
+  --paper:#f3f6f5;--card:#ffffff;--border:#dce5e2;--border-strong:#bdccc7;
+  --accent:#087c67;--accent-dark:#075d50;--accent-bg:#e4f3ef;--accent-line:#b8ded4;
+  --good:#087c67;--good-bg:#e7f5f1;--warn:#9a6811;--warn-bg:#fff5dd;
+  --bad:#b23d42;--bad-bg:#fff0f0;
+  --mono:'DM Mono',monospace;--sans:'Manrope',sans-serif;--disp:'Manrope',sans-serif;
+  --navy:#17313b;--navy-2:#214651;--blue:#246bce;
+  --shadow-sm:0 1px 2px rgba(15,38,45,.04),0 5px 16px rgba(15,38,45,.035);
+  --shadow-lg:0 18px 45px rgba(15,38,45,.09);
+}
+html{scroll-behavior:smooth}
+body{min-height:100vh;background:
+  radial-gradient(circle at 9% 2%,rgba(8,124,103,.07),transparent 26rem),
+  linear-gradient(180deg,#f8faf9 0,#f3f6f5 34rem);font-size:14px;line-height:1.62;letter-spacing:-.006em}
+button,input,textarea,select{font:inherit}
+header{position:relative;background:rgba(255,255,255,.88);border-bottom:1px solid rgba(189,204,199,.72);backdrop-filter:blur(18px);z-index:20}
+.head-inner{max-width:1440px;padding:22px 38px 20px;display:grid;grid-template-columns:minmax(300px,1.1fr) minmax(400px,1.35fr) auto;gap:34px;align-items:center}
+.brand{align-items:center;gap:13px;flex-wrap:nowrap}
+.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,var(--accent),#0a6859);color:#fff;font-weight:800;font-size:13px;letter-spacing:.04em;box-shadow:0 8px 20px rgba(8,124,103,.22);flex:none}
+.brand-copy{display:flex;flex-direction:column;gap:1px}
+.brand h1{font-family:var(--sans);font-size:17px;font-weight:800;line-height:1.15;letter-spacing:-.035em;color:var(--navy)}
+.brand .tag{padding:0;border:0;background:none;border-radius:0;font-family:var(--mono);font-size:9.5px;line-height:1.35;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.purpose{margin:0;max-width:650px;font-size:12.5px;line-height:1.55;color:var(--muted)}
+.header-meta{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.privacy{margin:0;max-width:none;align-items:center;white-space:nowrap;padding:8px 11px;border-radius:99px;font-size:11px;line-height:1.2;background:#edf7f4;border-color:#cde8e0}
+.privacy .lock{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#d5eee7;font-size:10px}
+.version-badge{font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--border);background:#fff;padding:7px 9px;border-radius:8px}
+.compliance-btn{appearance:none;border:1px solid var(--border-strong);background:#fff;color:var(--navy);padding:8px 12px;border-radius:9px;font-size:11px;font-weight:700;cursor:pointer;transition:border-color .16s,background .16s,transform .16s}
+.compliance-btn:hover{border-color:var(--accent);background:var(--accent-bg);color:var(--accent-dark);transform:translateY(-1px)}
+.wrap{max-width:1440px;padding:0 38px 80px}
+.layout{grid-template-columns:220px minmax(0,1fr);gap:34px;margin-top:30px}
+main{min-width:0}
+.rail{top:24px;gap:2px;padding:10px;background:rgba(255,255,255,.7);border:1px solid rgba(220,229,226,.9);border-radius:16px;box-shadow:var(--shadow-sm);backdrop-filter:blur(12px)}
+.rail::before{content:'WORKFLOW';font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--faint);padding:7px 12px 10px}
+.rail button{gap:11px;padding:10px;border-radius:10px;font-size:12.5px;transition:background .18s,color .18s,transform .18s}
+.rail button:hover:not(:disabled){background:#f1f7f5;color:var(--navy);transform:translateX(1px)}
+.rail button.active{background:var(--accent-bg);color:var(--accent-dark);box-shadow:inset 0 0 0 1px rgba(8,124,103,.08)}
+.rail .n{width:25px;height:25px;border-width:1px;background:#fff;font-size:10px}
+.rail button.active .n{color:#fff;background:var(--accent);border-color:var(--accent);box-shadow:none}
+.rail button.done .n{background:var(--navy);border-color:var(--navy)}
+.rail .sep{margin:8px 4px}
+.panel.show{animation:panelIn .32s cubic-bezier(.2,.7,.2,1)}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.panel-heading{margin:4px 0 22px}
+.eyebrow{font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.panel-heading h2{font-size:30px;line-height:1.18;letter-spacing:-.045em;color:var(--navy);margin:0 0 8px}
+.panel-heading p{max-width:720px;color:var(--muted);font-size:13.5px}
+.card{border:1px solid rgba(220,229,226,.92);border-radius:18px;padding:26px;margin-bottom:18px;box-shadow:var(--shadow-sm);background:rgba(255,255,255,.94)}
+.card:hover{border-color:#d3dfdb}
+.p1-grid{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(440px,1.45fr);gap:18px;align-items:stretch}
+.p1-grid>.card{margin-bottom:0}
+.key-card{background:linear-gradient(145deg,#17313b,#1f4650);border-color:transparent;color:#fff;box-shadow:0 18px 40px rgba(23,49,59,.15)}
+.key-card h2{color:#fff}.key-card .sub{color:#c7d6d9}.key-card label{color:#dbe6e8}.key-card details{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.13)}.key-card summary{color:#fff}.key-card details ol{color:#c7d6d9}.key-card .btn.ghost{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff}.key-card .btn.ghost:hover{background:rgba(255,255,255,.17)}
+.brief-card textarea{min-height:230px;background:#f7faf9}
+.confirm-card{margin-top:18px;border-color:var(--accent-line);box-shadow:0 10px 30px rgba(8,124,103,.07)}
+h2{font-size:18px;font-weight:750;letter-spacing:-.027em;color:var(--navy);margin-bottom:6px}
+h4{font-size:13px;color:var(--navy)}
+.sub{font-size:12.75px;line-height:1.62;margin-bottom:17px}
+label{font-size:11px;text-transform:uppercase;letter-spacing:.065em;color:#40545b;margin:17px 0 7px}
+textarea,input[type=text],input[type=password],input[type=number],select{border-color:var(--border);border-radius:10px;padding:11px 12px;background:#fbfcfc;font-size:13px;box-shadow:inset 0 1px 1px rgba(18,45,54,.02)}
+textarea:hover,input:hover,select:hover{border-color:#adc2bb}
+textarea:focus,input:focus,select:focus{outline:4px solid rgba(8,124,103,.10);border-color:var(--accent);background:#fff}
+textarea.mono{font-size:11.5px;line-height:1.75}
+.btn{min-height:40px;justify-content:center;border-radius:10px;padding:9px 17px;font-size:12.5px;letter-spacing:-.01em;box-shadow:0 5px 12px rgba(8,124,103,.12);transition:transform .16s,background .16s,border .16s,box-shadow .16s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(8,124,103,.17)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{box-shadow:none;background:#fff}.btn.ghost:hover{background:#eff8f5;box-shadow:none}
+.btn.sm{min-height:34px;padding:6px 11px;font-size:11.5px}
+.btn-row{margin-top:18px}
+.keyrow{align-items:stretch}.keyrow input[type=password]{background:rgba(255,255,255,.95);border-color:transparent}
+.chk{text-transform:none;letter-spacing:0;color:#c7d6d9!important;font-size:10.5px!important;line-height:1.45}
+.ok,.err{border-radius:10px;font-size:12px;padding:9px 12px}
+details{border-radius:12px;background:#f7faf9;padding:12px 14px}summary{font-size:12px}details ol{font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));gap:9px;margin:18px 0 12px}
+.stat{position:relative;overflow:hidden;background:#f7faf9;border-color:var(--border);border-radius:12px;padding:12px 14px;min-width:0}
+.stat::after{content:'';position:absolute;right:-16px;bottom:-22px;width:52px;height:52px;border-radius:50%;background:rgba(8,124,103,.06)}
+.stat .v{font-family:var(--sans);font-size:22px;font-weight:750;color:var(--navy);letter-spacing:-.045em}
+.stat .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.09em;color:var(--muted)}
+.map-shell{position:relative;margin-top:15px;border-radius:16px;overflow:hidden;isolation:isolate}
+#map{height:560px;margin-top:0;border-radius:16px;border:1px solid #cddbd7;background:linear-gradient(145deg,#e7eeec,#f4f7f6);box-shadow:inset 0 0 0 4px rgba(255,255,255,.5),0 12px 30px rgba(20,48,57,.08)}
+.map-toolbar{position:absolute;top:14px;left:14px;right:14px;z-index:7;display:flex;align-items:center;justify-content:space-between;gap:10px;pointer-events:none}
+.map-metrics{display:flex;align-items:center;gap:8px;min-height:36px;padding:8px 11px;border:1px solid rgba(205,219,215,.9);border-radius:10px;background:rgba(255,255,255,.94);box-shadow:0 7px 22px rgba(20,48,57,.12);backdrop-filter:blur(10px);font-family:var(--mono);font-size:9.5px;color:var(--navy);pointer-events:auto}
+.map-metrics-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(8,124,103,.12)}
+.map-toolbar-actions{display:flex;gap:7px;pointer-events:auto}
+.map-tool-btn{min-height:36px;border:1px solid rgba(205,219,215,.9);border-radius:10px;background:rgba(255,255,255,.94);color:var(--navy);padding:7px 10px;font-size:10px;font-weight:700;box-shadow:0 7px 22px rgba(20,48,57,.10);cursor:pointer;backdrop-filter:blur(10px)}
+.map-tool-btn:hover{background:var(--accent-bg);border-color:var(--accent-line);color:var(--accent-dark)}
+.map-detail{position:absolute;top:62px;right:14px;z-index:8;width:290px;max-width:calc(100% - 28px);padding:16px;border:1px solid rgba(205,219,215,.94);border-radius:13px;background:rgba(255,255,255,.97);box-shadow:0 14px 35px rgba(20,48,57,.18);backdrop-filter:blur(12px);opacity:0;visibility:hidden;transform:translateY(-5px);transition:opacity .18s,visibility .18s,transform .18s}
+.map-detail.show{opacity:1;visibility:visible;transform:none}
+.map-detail-close{position:absolute;top:9px;right:9px;width:26px;height:26px;border:0;border-radius:8px;background:#f0f5f3;color:var(--muted);cursor:pointer;font-size:15px}
+.map-detail-label{font-family:var(--mono);font-size:8.5px;letter-spacing:.09em;color:var(--accent);margin-bottom:6px}
+.map-detail h3{padding-right:24px;font-size:14px;color:var(--navy);line-height:1.35;margin-bottom:5px}
+.map-detail p{font-size:10.5px;color:var(--muted);line-height:1.55}
+.map-detail-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.map-detail-meta span{font-family:var(--mono);font-size:8.5px;padding:4px 6px;border-radius:6px;background:#f0f5f3;color:#486068}
+.map-detail-actions{display:flex;gap:8px;margin-top:12px}.map-detail-actions a,.map-detail-actions button{font-size:10px;font-weight:700;color:var(--accent-dark);background:var(--accent-bg);border:1px solid var(--accent-line);border-radius:8px;padding:6px 9px;text-decoration:none;cursor:pointer}
+.map-loading{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;text-align:center;background:rgba(244,248,247,.94);backdrop-filter:blur(5px);opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease}
+.map-loading.show{opacity:1;visibility:visible}
+.map-loading-spinner{width:36px;height:36px;border:3px solid #c9ded8;border-top-color:var(--accent);border-radius:50%;animation:mapSpin .8s linear infinite}
+.map-loading strong{font-size:14px;color:var(--navy);letter-spacing:-.02em}
+.map-loading small{max-width:280px;color:var(--muted);font-size:10.5px;line-height:1.5}
+@keyframes mapSpin{to{transform:rotate(360deg)}}
+.route-dock{margin-top:10px;border:1px solid var(--border);border-radius:14px;background:#f8faf9;overflow:hidden}
+.route-dock-empty{padding:16px;color:var(--muted);font-size:11px}
+.route-dock-group+.route-dock-group{border-top:1px solid var(--border)}
+.route-dock-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 13px;border-bottom:1px solid var(--border);background:#fff}
+.route-dock-head-copy{display:flex;align-items:baseline;gap:9px;min-width:0}.route-dock-head-copy b{font-size:10.5px;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.route-dock-head-copy span{font-family:var(--mono);font-size:8.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.route-dock-controls{display:flex;align-items:center;gap:5px;flex:none}.route-dock-count{font-family:var(--mono);font-size:8.5px;color:var(--muted);margin-right:3px}.route-scroll-btn{width:29px;height:29px;border:1px solid var(--border);border-radius:8px;background:#f7faf9;color:var(--navy);font-size:16px;line-height:1;cursor:pointer}.route-scroll-btn:hover{background:var(--accent-bg);border-color:var(--accent-line);color:var(--accent-dark)}
+.route-track{display:flex;align-items:stretch;gap:0;padding:10px 18px 13px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x proximity;scroll-padding:18px;scrollbar-width:thin;scrollbar-color:#aec7c0 transparent}
+.route-track::-webkit-scrollbar{height:7px}.route-track::-webkit-scrollbar-track{background:transparent}.route-track::-webkit-scrollbar-thumb{background:#aec7c0;border-radius:99px;border:2px solid #f8faf9}
+.route-stop-wrap{display:flex;align-items:center;flex:none}
+.route-connector{width:28px;height:1px;background:#a9c3bc;position:relative;flex:none}.route-connector::after{content:'';position:absolute;right:-1px;top:-3px;width:6px;height:6px;border-top:1px solid #789b92;border-right:1px solid #789b92;transform:rotate(45deg)}
+.route-stop{width:230px;min-height:94px;text-align:left;border:1px solid var(--border);border-radius:11px;background:#fff;padding:11px;cursor:pointer;scroll-snap-align:start;transition:border-color .16s,background .16s,transform .16s,box-shadow .16s}
+.route-stop:hover{border-color:var(--accent-line);transform:translateY(-1px);box-shadow:0 7px 18px rgba(20,48,57,.07)}
+.route-stop.active{border-color:var(--accent);background:var(--accent-bg);box-shadow:0 0 0 2px rgba(8,124,103,.10)}
+.route-stop-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px}.route-stop-badge{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:9px;font-weight:800;flex:none}.route-stop.subject .route-stop-badge{background:#dc5b49}.route-stop-name{display:block;flex:1;min-width:0;font-size:10.5px;font-weight:750;color:var(--navy);line-height:1.4;white-space:normal;overflow:visible;overflow-wrap:anywhere}.route-stop-sub{display:block;width:100%;font-family:var(--mono);font-size:8.5px;line-height:1.5;color:var(--muted);white-space:normal;overflow:visible;overflow-wrap:anywhere}.route-stop.active .route-stop-badge{background:var(--accent)}
+.legend{align-items:center;gap:10px;margin-top:11px;font-family:var(--mono);font-size:9.5px}
+.legend span{background:#f7faf9;border:1px solid var(--border);padding:6px 9px;border-radius:99px}
+.legend span::before{vertical-align:-1px}
+.route-status{font-family:var(--mono);font-size:10px}
+.addr-block{border-left:0;padding:17px 18px;margin:20px 0 0;background:#f7faf9;border:1px solid var(--border);border-radius:12px}
+.addr-block h3{font-size:14px;color:var(--navy)}
+.addr-block .meta{font-size:10px}
+table{font-size:12.5px;margin-top:12px;border:1px solid var(--border);border-radius:12px;border-collapse:separate;border-spacing:0;overflow:hidden}
+th{font-family:var(--mono);font-size:8.5px;color:#71828a;background:#f6f9f8;padding:9px 11px;border-bottom-color:var(--border)}
+td{padding:11px;border-bottom-color:#e7edeb;background:#fff}
+tbody tr:last-child td{border-bottom:0}tr:hover td{background:#f8fbfa}
+.facility-row{cursor:pointer}.facility-row:focus-within td{background:#eff8f5}
+.dist{font-size:10.5px}.pill{font-size:9px}
+.manual-zone{border-top:1px solid var(--border);margin-top:20px;padding-top:18px}
+.comp-card{border-radius:16px;padding:22px;border-color:var(--border);box-shadow:var(--shadow-sm)}
+.comp-head h3{font-size:15px;color:var(--navy)}
+.steps{background:#edf7f4;border-color:#cce7e0;border-radius:10px;font-size:11.5px}
+.grid2{gap:9px}.field{border-radius:10px;background:#f8faf9}.field .k{font-family:var(--mono);font-size:8.5px}.field input{font-size:12px}
+.out{border-radius:13px;background:#111f25;color:#d6e5e1;border-color:#111f25;font-size:10.5px;line-height:1.8}
+.progress{font-family:var(--mono);font-size:10.5px;color:var(--accent)}
+.compliance-hero{position:relative;overflow:hidden;padding:34px;background:linear-gradient(145deg,#17313b,#24515b);border:0;color:#fff;box-shadow:var(--shadow-lg)}
+.compliance-hero::after{content:'';position:absolute;width:240px;height:240px;border-radius:50%;right:-80px;top:-100px;background:rgba(255,255,255,.06)}
+.compliance-mark{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:#dff4ee;color:var(--accent);font-size:19px;font-weight:800;margin-bottom:22px}
+.compliance-hero h2{position:relative;color:#fff;font-size:27px;max-width:620px;letter-spacing:-.04em}
+.compliance-hero p{position:relative;max-width:720px;color:#c9dadd;font-size:13px;margin-top:9px}
+.compliance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+.compliance-card{padding:22px;border:1px solid var(--border);border-radius:15px;background:#fff;box-shadow:var(--shadow-sm)}
+.compliance-card .compliance-num{font-family:var(--mono);font-size:9px;color:var(--accent);letter-spacing:.09em;margin-bottom:10px}
+.compliance-card h3{font-size:14px;color:var(--navy);margin-bottom:6px}
+.compliance-card p{font-size:11.5px;color:var(--muted);line-height:1.65}
+.data-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:15px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.data-flow div{padding:18px;background:#f8faf9;border-right:1px solid var(--border)}
+.data-flow div:last-child{border-right:0}.data-flow b{display:block;color:var(--navy);font-size:11.5px;margin-bottom:4px}.data-flow span{font-size:10.5px;color:var(--muted)}
+.theme-btn{width:38px;min-width:38px;height:38px;padding:0;border-radius:10px;font-size:17px;line-height:1;display:grid;place-items:center}
+
+/* Dark workspace and night map chrome */
+body.dark{
+  --ink:#e4eeeb;--muted:#9eb0b5;--faint:#71858b;
+  --paper:#0d171b;--card:#142227;--border:#263a40;--border-strong:#3a5158;
+  --accent:#53cbb2;--accent-dark:#7edcc8;--accent-bg:#173a35;--accent-line:#2c675b;
+  --good:#70d6bd;--good-bg:#17362f;--warn:#e4b75f;--warn-bg:#3a2d16;
+  --bad:#f18b8e;--bad-bg:#3b2023;--navy:#e8f2ef;--navy-2:#cfe2dd;--blue:#68a2ff;
+  color-scheme:dark;background:radial-gradient(circle at 9% 2%,rgba(83,203,178,.10),transparent 28rem),linear-gradient(180deg,#101d21 0,#0d171b 34rem);
+}
+body.dark header{background:rgba(16,29,33,.9);border-bottom-color:#263a40}
+body.dark .brand h1{color:#edf6f3}
+body.dark .brand-mark{background:linear-gradient(145deg,#1da88e,#08705f)}
+body.dark .version-badge,body.dark .compliance-btn{background:#142227;border-color:#31474e;color:#dbe8e5}
+body.dark .compliance-btn:hover{background:#173a35;border-color:#2c675b;color:#83dfcc}
+body.dark .rail{background:rgba(20,34,39,.82);border-color:#263a40;box-shadow:0 8px 26px rgba(0,0,0,.18)}
+body.dark .rail button:hover:not(:disabled){background:#172c30;color:#edf6f3}
+body.dark .rail button.active{background:#173a35;color:#8ce4d1}
+body.dark .rail .n{background:#142227;border-color:#3a5158}
+body.dark .card,body.dark .comp-card,body.dark .compliance-card{background:rgba(20,34,39,.96);border-color:#263a40;box-shadow:0 8px 28px rgba(0,0,0,.14)}
+body.dark .key-card,body.dark .compliance-hero{background:linear-gradient(145deg,#16343b,#10272d);border-color:#29464d}
+body.dark textarea,body.dark input[type=text],body.dark input[type=password],body.dark input[type=number],body.dark select{background:#101d21;border-color:#30464d;color:#e4eeeb}
+body.dark textarea:hover,body.dark input:hover,body.dark select:hover{border-color:#49636b}
+body.dark textarea:focus,body.dark input:focus,body.dark select:focus{background:#132429;border-color:#53cbb2;outline-color:rgba(83,203,178,.13)}
+body.dark .brief-card textarea,body.dark details,body.dark .stat,body.dark .addr-block,body.dark .field{background:#101d21;border-color:#263a40}
+body.dark .stat::after{background:rgba(83,203,178,.07)}
+body.dark .btn.ghost{background:#142227;color:#77d9c5;border-color:#2f665a}
+body.dark .btn.ghost:hover{background:#173a35}
+body.dark table{border-color:#263a40}body.dark th{background:#101d21;color:#81969c;border-bottom-color:#263a40}body.dark td{background:#142227;border-bottom-color:#21343a}body.dark tr:hover td,body.dark .facility-row:focus-within td{background:#172b30}
+body.dark .map-shell{box-shadow:0 18px 40px rgba(0,0,0,.24)}
+body.dark #map{border-color:#31474e;background:#111f24;box-shadow:inset 0 0 0 4px rgba(0,0,0,.12),0 12px 30px rgba(0,0,0,.18)}
+body.dark .map-metrics,body.dark .map-tool-btn,body.dark .map-detail{background:rgba(20,34,39,.94);border-color:#32484f;color:#e5efec;box-shadow:0 9px 25px rgba(0,0,0,.28)}
+body.dark .map-tool-btn:hover{background:#173a35;border-color:#2c675b;color:#8ce4d1}
+body.dark .map-detail-close{background:#20343a;color:#9eb0b5}
+body.dark .map-detail-meta span{background:#1b3035;color:#b4c5c8}
+body.dark .map-loading{background:rgba(13,23,27,.93)}
+body.dark .map-loading-spinner{border-color:#31544d;border-top-color:#53cbb2}
+body.dark .route-dock{background:#101d21;border-color:#263a40}
+body.dark .route-dock-head,body.dark .route-stop{background:#142227;border-color:#2a3e44}
+body.dark .route-stop:hover{border-color:#367568;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+body.dark .route-stop.active{background:#173a35;border-color:#53cbb2;box-shadow:0 0 0 2px rgba(83,203,178,.10)}
+body.dark .route-scroll-btn{background:#17272c;border-color:#31474e;color:#dbe8e5}
+body.dark .route-scroll-btn:hover{background:#173a35;border-color:#367568;color:#8ce4d1}
+body.dark .route-track::-webkit-scrollbar-thumb{background:#46635d;border-color:#101d21}
+body.dark .route-connector{background:#41665e}body.dark .route-connector::after{border-color:#6d978d}
+body.dark .steps{background:#17312e;border-color:#2d554d;color:#c5ddd8}
+body.dark .data-flow{border-color:#263a40}body.dark .data-flow div{background:#101d21;border-color:#263a40}
+body.dark .out{background:#091216;border-color:#263a40;color:#d4e6e1}
+body.dark footer{border-color:#263a40}
+
+/* Neutral black dark theme */
+body.dark{
+  --ink:#edf0f4;--muted:#a1a7b0;--faint:#747b85;
+  --paper:#08090b;--card:#111317;--border:#25282e;--border-strong:#3a3f48;
+  --accent:#6ea8fe;--accent-dark:#a6c9ff;--accent-bg:#172235;--accent-line:#304b70;
+  --good:#69d3ad;--good-bg:#142b24;--warn:#e6b85f;--warn-bg:#342916;
+  --bad:#f18b8e;--bad-bg:#351c20;--navy:#f1f3f6;--navy-2:#d9dde3;--blue:#6ea8fe;
+  background:radial-gradient(circle at 10% 0,rgba(74,126,209,.10),transparent 30rem),linear-gradient(180deg,#0b0c0f 0,#08090b 34rem);
+}
+body.dark header{background:rgba(11,12,15,.92);border-bottom-color:#24272d}
+body.dark .brand-mark{background:linear-gradient(145deg,#397bd7,#2458a0);box-shadow:0 8px 20px rgba(36,88,160,.24)}
+body.dark .version-badge,body.dark .compliance-btn{background:#13151a;border-color:#30343b;color:#e1e4e9}
+body.dark .compliance-btn:hover{background:#19243a;border-color:#365888;color:#b9d3ff}
+body.dark .rail{background:rgba(17,19,23,.88);border-color:#25282e;box-shadow:0 8px 26px rgba(0,0,0,.34)}
+body.dark .rail button:hover:not(:disabled){background:#191c22;color:#f4f6f8}
+body.dark .rail button.active{background:#172235;color:#b9d3ff}
+body.dark .rail .n{background:#111317;border-color:#3a3f48}
+body.dark .card,body.dark .comp-card,body.dark .compliance-card{background:rgba(17,19,23,.97);border-color:#25282e;box-shadow:0 8px 28px rgba(0,0,0,.25)}
+body.dark .key-card,body.dark .compliance-hero{background:linear-gradient(145deg,#151921,#0e1014);border-color:#2b3038}
+body.dark textarea,body.dark input[type=text],body.dark input[type=password],body.dark input[type=number],body.dark select{background:#0d0f12;border-color:#30343b;color:#edf0f4}
+body.dark textarea:hover,body.dark input:hover,body.dark select:hover{border-color:#4a505a}
+body.dark textarea:focus,body.dark input:focus,body.dark select:focus{background:#11141a;border-color:#6ea8fe;outline-color:rgba(110,168,254,.14)}
+body.dark .brief-card textarea,body.dark details,body.dark .stat,body.dark .addr-block,body.dark .field{background:#0d0f12;border-color:#25282e}
+body.dark .btn.ghost{background:#111317;color:#a6c9ff;border-color:#304b70}
+body.dark .btn.ghost:hover{background:#172235}
+body.dark th{background:#0d0f12;color:#868d97;border-bottom-color:#25282e}body.dark td{background:#111317;border-bottom-color:#22252b}body.dark tr:hover td,body.dark .facility-row:focus-within td{background:#171a20}
+body.dark #map{border-color:#30343b;background:#0e1014}
+body.dark .map-metrics,body.dark .map-tool-btn,body.dark .map-detail{background:rgba(17,19,23,.95);border-color:#343841;color:#edf0f4}
+body.dark .map-tool-btn:hover{background:#172235;border-color:#365888;color:#b9d3ff}
+body.dark .map-detail-close{background:#202329;color:#aeb4bd}
+body.dark .map-detail-meta span{background:#1b1e24;color:#bdc2c9}
+body.dark .map-loading{background:rgba(8,9,11,.94)}body.dark .map-loading-spinner{border-color:#2d3440;border-top-color:#6ea8fe}
+body.dark .route-dock{background:#0d0f12;border-color:#25282e}
+body.dark .route-dock-head,body.dark .route-stop{background:#111317;border-color:#292d34}
+body.dark .route-stop:hover{border-color:#365888}
+body.dark .route-stop.active{background:#172235;border-color:#6ea8fe;box-shadow:0 0 0 2px rgba(110,168,254,.11)}
+body.dark .route-scroll-btn{background:#17191e;border-color:#30343b;color:#e1e4e9}
+body.dark .route-scroll-btn:hover{background:#172235;border-color:#365888;color:#b9d3ff}
+body.dark .route-track::-webkit-scrollbar-thumb{background:#454b55;border-color:#0d0f12}
+body.dark .route-connector{background:#44536a}body.dark .route-connector::after{border-color:#7185a4}
+body.dark .steps{background:#151c29;border-color:#293a55;color:#d1d9e6}
+body.dark .data-flow div{background:#0d0f12;border-color:#25282e}
+footer{font-size:10px;line-height:1.75;padding:18px 4px 0;margin-top:40px}
+@media(max-width:1100px){.head-inner{grid-template-columns:1fr auto}.purpose{grid-column:1/-1;grid-row:2}.p1-grid{grid-template-columns:1fr}.p1-grid>.card{margin-bottom:0}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){.head-inner{padding:18px 20px}.header-meta{display:flex}.header-meta .privacy,.header-meta .version-badge{display:none}.wrap{padding:0 18px 60px}.layout{grid-template-columns:1fr;gap:16px;margin-top:18px}.rail{position:sticky!important;top:0!important;z-index:15;flex-direction:row!important;border-radius:12px;overflow:auto;padding:7px}.rail::before,.rail .sep{display:none}.rail button{padding:7px 9px}.rail button:hover:not(:disabled){transform:none}.rail button .n{width:22px;height:22px}.panel-heading h2{font-size:25px}#map{height:470px}.compliance-grid{grid-template-columns:1fr}.data-flow{grid-template-columns:1fr}.data-flow div{border-right:0;border-bottom:1px solid var(--border)}.data-flow div:last-child{border-bottom:0}.route-stop{width:190px}.route-dock-head-copy span{display:none}}
+@media(max-width:640px){.purpose{display:none}.brand h1{font-size:15px}.brand-mark{width:36px;height:36px}.wrap{padding:0 12px 50px}.card{padding:18px;border-radius:15px}.p1-grid{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:1fr 1fr}#map{height:430px;border-radius:12px}.legend{gap:6px}.legend span{padding:5px 7px}.btn{width:100%}.compliance-btn{width:auto}.btn-row{align-items:stretch}.keyrow{display:grid;grid-template-columns:1fr}.keyrow input[type=password]{min-width:0}table{display:block;overflow-x:auto;white-space:nowrap}.compliance-hero{padding:24px}.compliance-hero h2{font-size:23px}}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="head-inner">
+    <div class="brand">
+      <span class="brand-mark">MR</span>
+      <span class="brand-copy">
+        <h1>Market Research Companion</h1>
+        <span class="tag">Location intelligence workspace</span>
+      </span>
+    </div>
+    <p class="purpose">Build a defensible view of a property, its competitive set, and its surrounding context—organized from verifiable sources and ready for internal analysis.</p>
+    <div class="header-meta">
+      <button class="compliance-btn" type="button" onclick="openCompliance()">Compliance</button>
+      <button class="compliance-btn theme-btn" id="themeToggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode" onclick="toggleDarkMode()">☾</button>
+      <span class="version-badge">V4</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="layout">
+
+<nav class="rail" id="rail">
+  <button class="active" data-p="1"><span class="n">1</span>Research brief</button>
+  <button data-p="2" disabled><span class="n">2</span>Find competitors</button>
+  <button data-p="3" disabled><span class="n">3</span>Location overview</button>
+  <button data-p="4" disabled><span class="n">4</span>Collect data</button>
+  <button data-p="5" disabled><span class="n">5</span>Research package</button>
+  <div class="sep"></div>
+  <button data-p="6"><span class="n">&#8635;</span>Re-check mode</button>
+</nav>
+
+<main>
+
+<!-- PHASE 1 -->
+<section class="panel show" id="p1">
+  <div class="panel-heading">
+    <div class="eyebrow">New research project</div>
+    <h2>Start with the property brief.</h2>
+    <p>Paste a request in plain English or structured JSON. The workspace will identify the subject, search radius, asset class, and data requirements before anything runs.</p>
+  </div>
+  <div class="p1-grid">
+  <div class="card key-card">
+    <h2>Data source</h2>
+    <p class="sub">With a Google Maps API key, discovery and location context use Google's professional places database, and report maps can show an optimized driving route. Without a key, the tool falls back to free OpenStreetMap data, which can be thin in some regions.</p>
+    <div class="keyrow">
+      <input type="password" id="gkey" placeholder="Google Maps API key (recommended)">
+      <button class="btn ghost" onclick="saveKey()">Apply key</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="rememberKey"> Remember this key on this device only (stored in this browser, never sent anywhere except Google)</label>
+    <div class="ok" id="keyOk"></div>
+    <details>
+      <summary>How to get a free Google Maps API key (one-time, ~15 minutes)</summary>
+      <ol>
+        <li>Go to console.cloud.google.com, sign in with any Google account, and create a new project.</li>
+        <li>Google requires a billing account with a credit card for verification. Free monthly usage covers thousands of searches — at typical team volume the cost stays at $0.</li>
+        <li>Enable five APIs: "Maps JavaScript API", "Places API (New)", "Geocoding API", "Routes API", and "Maps Static API". If the key has API restrictions, add all five there too.</li>
+        <li>Go to Credentials, Create credentials, API key. Copy it.</li>
+        <li>Strongly recommended: edit the key, and under "Application restrictions" choose "Websites", then add this tool's web address so the key only works on this page.</li>
+        <li>Paste the key above and click Apply.</li>
+      </ol>
+    </details>
+  </div>
+
+  <div class="card brief-card">
+    <h2>Paste the research brief</h2>
+    <p class="sub">Paste the request in any form — structured JSON from your internal AI, a plain-English instruction, or a list of addresses. One property or an entire portfolio at once: enter up to 10 subject addresses and the tool walks you through every phase property by property, producing one combined package at the end.</p>
+    <textarea id="brief" rows="7" class="mono" placeholder='Anything works here:
+
+"Find self-storage competitors within 5 km of 250 Yonge Street, Toronto, ON.
+Criteria: climate control, 10x10 rates, security features."
+
+…or paste the JSON request from your internal AI, or a list of addresses (one per line).'></textarea>
+    <div class="btn-row">
+      <button class="btn" onclick="parseBrief()">Read brief</button>
+      <label class="btn ghost" style="margin:0"><input type="file" accept=".txt,.json" style="display:none" onchange="loadFile(this)">Upload file instead</label>
+    </div>
+    <div class="err" id="e1"></div>
+  </div>
+  </div>
+
+  <div class="card confirm-card" id="parsedCard" style="display:none">
+    <h2>Confirm the request</h2>
+    <p class="sub">Review what was read from the brief. Edit anything before searching.</p>
+    <label>Asset class</label>
+    <select id="assetClass">
+      <option>Self-Storage</option><option>Retail</option><option>Industrial</option>
+      <option>Office</option><option>Multifamily</option>
+    </select>
+    <label>Subject addresses (one per line — batch supported)</label>
+    <textarea id="addresses" rows="4" placeholder="250 Yonge Street, Toronto, ON&#10;1 Bloor Street East, Toronto, ON"></textarea>
+    <label>Search radius (km)</label>
+    <input type="number" id="radius" value="5" min="1" max="50" style="width:130px">
+    <label>Criteria / data requirements from the brief (included verbatim in the output for the analyst)</label>
+    <textarea id="criteria" rows="3" placeholder="e.g. climate control required, 10x10 rates, security features…"></textarea>
+    <div class="btn-row"><button class="btn" onclick="goSearch()">Find competitors &rarr;</button></div>
+  </div>
+</section>
+
+<!-- PHASE 2 -->
+<section class="panel" id="p2">
+  <div class="panel-heading">
+    <div class="eyebrow">Step 02 · Competitive set</div>
+    <h2>See the market around the subject.</h2>
+    <p>Review mapped facilities, remove irrelevant listings, and refresh the drive route before moving into location context.</p>
+  </div>
+  <div class="card">
+    <h2>Competitor discovery</h2>
+    <p class="sub" id="srcNote"></p>
+    <div id="searchStatus" class="progress"></div>
+    <div class="stats" id="stats"></div>
+    <div class="map-shell">
+      <div id="map"></div>
+      <div class="map-toolbar">
+        <div class="map-metrics" id="mapMetrics"><span class="map-metrics-dot"></span><span>Waiting for locations</span></div>
+        <div class="map-toolbar-actions">
+          <button class="map-tool-btn" type="button" onclick="fitMapView()">Fit all</button>
+          <button class="map-tool-btn" id="routeVisibilityBtn" type="button" onclick="toggleRouteVisibility()">Hide route</button>
+        </div>
+      </div>
+      <aside class="map-detail" id="mapDetail" aria-live="polite"></aside>
+      <div class="map-loading" id="mapLoading" role="status" aria-live="polite" aria-hidden="true">
+        <span class="map-loading-spinner" aria-hidden="true"></span>
+        <strong id="mapLoadingText">Loading routes…</strong>
+        <small>Finding facilities and calculating the optimized drive path.</small>
+      </div>
+    </div>
+    <div class="route-dock" id="routeDock"><div class="route-dock-empty">Route stops will appear here after discovery.</div></div>
+    <div class="legend"><span class="l-sub">A · subject property</span><span class="l-comp">B onward · competitors</span><span class="l-route">Optimized driving route</span></div>
+    <div class="route-status" id="routeStatus"></div>
+    <div class="btn-row" style="margin-top:10px"><button class="btn ghost sm" id="refreshRouteBtn" onclick="refreshRoute()">Refresh route after selections</button></div>
+    <div id="results"></div>
+    <div class="err" id="e2"></div>
+    <div class="manual-zone">
+      <label style="margin-top:0">Add a competitor manually</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input type="text" id="manName" placeholder="Facility name" style="flex:2;min-width:160px">
+        <input type="text" id="manAddr" placeholder="Address (optional)" style="flex:2;min-width:160px">
+        <input type="text" id="manWeb" placeholder="Website (optional)" style="flex:2;min-width:160px">
+        <select id="manSubj" style="flex:1;min-width:140px"></select>
+        <button class="btn ghost" onclick="addManual()">Add</button>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="show(1)">&larr; Back</button>
+      <button class="btn" onclick="goLocation()">Location overview &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- PHASE 3 : LOCATION OVERVIEW -->
+<section class="panel" id="p3">
+  <div class="panel-heading">
+    <div class="eyebrow">Step 03 · Location context</div>
+    <h2>Read the map in plain language.</h2>
+    <p>A factual orientation to the subject, competitive clusters, corridors, transit, and surrounding named places.</p>
+  </div>
+  <div class="card">
+    <h2>Location overview — per property</h2>
+    <p class="sub">A factual read-out of the map is generated automatically: where the subject sits, how many listings and distinct mapped locations were found, distance bands, directions, measured clusters, corridors, and nearby named places. It describes what is visible without drawing conclusions about demand, rents, retention, or economic impact. Demographics, housing, and employment remain separate, cited source fields.</p>
+    <div class="progress" id="locProgress"></div>
+  </div>
+  <div id="locCards"></div>
+  <div class="btn-row">
+    <button class="btn ghost" onclick="show(2)">&larr; Back</button>
+    <button class="btn" onclick="goCollect()">Collect competitor data &rarr;</button>
+  </div>
+</section>
+
+<!-- PHASE 4 : COLLECT -->
+<section class="panel" id="p4">
+  <div class="panel-heading">
+    <div class="eyebrow">Step 04 · Facility evidence</div>
+    <h2>Complete the competitor record.</h2>
+    <p>Add rates, features, promotions, and source evidence for every included facility.</p>
+  </div>
+  <div class="card">
+    <h2>Guided competitor data collection</h2>
+    <p class="sub">For each competitor: open its website, select the whole page (<b>Ctrl+A</b>), copy (<b>Ctrl+C</b>), paste into the box. The tool extracts rates and features automatically and records a citation for every value. Anything it cannot find is marked not available; it never guesses. Competitors are grouped by subject property.</p>
+    <div class="progress" id="collectProgress"></div>
+  </div>
+  <div id="compCards"></div>
+  <div class="btn-row">
+    <button class="btn ghost" onclick="show(3)">&larr; Back</button>
+    <button class="btn" onclick="goOutput()">Generate research package &rarr;</button>
+  </div>
+</section>
+
+<!-- PHASE 5 : OUTPUT -->
+<section class="panel" id="p5">
+  <div class="panel-heading">
+    <div class="eyebrow">Step 05 · Delivery</div>
+    <h2>Your research package is ready.</h2>
+    <p>Export a formatted report, structured data, or a citation-ready text package for internal analysis.</p>
+  </div>
+  <div class="card">
+    <h2>Research package</h2>
+    <p class="sub">One combined package covering every property: location overview narratives, competitor data, written summaries, full fact-check citations, verbatim source excerpts, and data gaps. Paste the text package into your internal AI, or open the formatted PDF report \u2014 it includes the map, per-property location overview, competitor sections with links, and the citation sheet and source excerpts as appendices. Use your browser\u2019s print dialog and choose "Save as PDF".</p>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn" onclick="copyOut()" id="copyBtn">Copy research package</button>
+      <button class="btn" onclick="openReport()">Open PDF report</button>
+      <button class="btn ghost" onclick="downloadCSV()">Data CSV</button>
+      <button class="btn ghost" onclick="downloadCitations()">Citation sheet CSV</button>
+      <button class="btn ghost" onclick="show(4)">&larr; Back to data</button>
+    </div>
+    <div class="out" id="output" style="margin-top:20px"></div>
+  </div>
+</section>
+
+<!-- PHASE 6 : RE-CHECK -->
+<section class="panel" id="p6">
+  <div class="panel-heading">
+    <div class="eyebrow">Refresh an earlier study</div>
+    <h2>What changed since last time?</h2>
+    <p>Re-run discovery against a saved package to identify additions, removals, and records that need verification.</p>
+  </div>
+  <div class="card">
+    <h2>Re-check mode</h2>
+    <p class="sub">Been a while since a package was generated? Paste it here. The tool re-runs discovery for the same subjects and radius, then reports what changed: competitors that disappeared, new entrants, and a verification checklist with direct links.</p>
+    <textarea id="recheckIn" rows="8" class="mono" placeholder="Paste a previously generated research package here…"></textarea>
+    <div class="btn-row">
+      <button class="btn" onclick="runRecheck()">Re-check now</button>
+      <label class="btn ghost" style="margin:0"><input type="file" accept=".txt" style="display:none" onchange="loadRecheckFile(this)">Upload file</label>
+    </div>
+    <div class="err" id="e6"></div>
+    <div class="out" id="recheckOut" style="margin-top:20px;display:none"></div>
+  </div>
+</section>
+
+<!-- COMPLIANCE -->
+<section class="panel" id="p7">
+  <div class="card compliance-hero">
+    <div class="compliance-mark">✓</div>
+    <div class="eyebrow" style="color:#8ed8c8">Privacy &amp; data handling</div>
+    <h2>Your research stays in this browser session.</h2>
+    <p>This tool has no application database, user account, analytics pipeline, or research-storage backend. Your brief, selected competitors, collected evidence, and generated package remain in the active browser tab.</p>
+  </div>
+
+  <div class="compliance-grid">
+    <article class="compliance-card">
+      <div class="compliance-num">01 · PROCESSING</div>
+      <h3>Browser-based processing</h3>
+      <p>Parsing, calculations, duplicate consolidation, narrative assembly, report creation, and file exports happen directly in your browser.</p>
+    </article>
+    <article class="compliance-card">
+      <div class="compliance-num">02 · STORAGE</div>
+      <h3>No research record is saved</h3>
+      <p>The tool does not save briefs, addresses, competitor selections, pasted website evidence, reports, or exports. Closing or refreshing the tab clears the active research session.</p>
+    </article>
+    <article class="compliance-card">
+      <div class="compliance-num">03 · MAP SERVICES</div>
+      <h3>Location requests go directly to providers</h3>
+      <p>Addresses and map searches are sent from your browser to Google Maps Platform—or OpenStreetMap when used—to geocode locations, find places, draw maps, and calculate routes.</p>
+    </article>
+    <article class="compliance-card">
+      <div class="compliance-num">04 · API KEY</div>
+      <h3>API key handling</h3>
+      <p>No Google API key is embedded in this tool. A key you provide is held for the active session, and is stored in this browser only when you explicitly select “Remember this key”; no key is sent to an application backend.</p>
+    </article>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow">Data flow</div>
+    <h2>What happens to your information</h2>
+    <div class="data-flow">
+      <div><b>1. You provide a brief</b><span>It is read and held in the current browser tab.</span></div>
+      <div><b>2. Providers return map data</b><span>Only required location requests go to the named map services.</span></div>
+      <div><b>3. You export the result</b><span>Files are generated locally and saved only when you choose to download them.</span></div>
+    </div>
+    <div class="btn-row"><button class="btn ghost" type="button" onclick="closeCompliance()">&larr; Return to workspace</button></div>
+  </div>
+</section>
+
+<footer>
+  Data sources: Google Places via the Google Maps Platform when a key is supplied · OpenStreetMap contributors via Overpass API as fallback · Nominatim geocoding fallback · Statistics Canada, municipal planning pages, employment surveys and competitor public websites via user-guided collection with per-field citations.<br>
+  This tool performs no automated scraping, stores nothing beyond an optional locally saved API key, and applies no analytical judgment. Verify all figures against cited sources before use in final materials.
+</footer>
+
+</main>
+</div>
+</div>
+
+<script>
+var state={addresses:[],geocoded:[],competitors:[],radius:5,assetClass:'Self-Storage',criteria:'',source:'',map:null,darkMode:false};
+var maxPhase=1;
+var GKEY='';
+
+try{
+  var savedTheme=localStorage.getItem('mrc_theme');
+  state.darkMode=savedTheme?savedTheme==='dark':!!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+}catch(themeErr){state.darkMode=false;}
+document.body.classList.toggle('dark',state.darkMode);
+
+function updateThemeButton(){
+  var b=document.getElementById('themeToggle');if(!b)return;
+  b.textContent=state.darkMode?'☀':'☾';
+  var label=state.darkMode?'Switch to light mode':'Switch to dark mode';
+  b.setAttribute('aria-label',label);b.setAttribute('title',label);
+}
+function toggleDarkMode(){
+  state.darkMode=!state.darkMode;
+  document.body.classList.toggle('dark',state.darkMode);
+  try{localStorage.setItem('mrc_theme',state.darkMode?'dark':'light')}catch(e){}
+  updateThemeButton();
+  if(state.map&&state.map.setOptions)state.map.setOptions({styles:state.darkMode?DARK_MAP_STYLES:SIMPLE_MAP_STYLES});
+}
+updateThemeButton();
+
+try{
+  var k=localStorage.getItem('mrc_gkey');
+  if(k){GKEY=k;document.getElementById('rememberKey').checked=true;}
+}catch(e){}
+document.getElementById('gkey').value=GKEY;
+if(GKEY){
+  var ok0=document.getElementById('keyOk');
+  ok0.textContent='Saved key loaded — Google Places will be used.';
+  ok0.style.display='block';
+  loadGoogle(GKEY);
+}
+
+function saveKey(){
+  GKEY=document.getElementById('gkey').value.trim();
+  var ok=document.getElementById('keyOk');
+  try{
+    if(document.getElementById('rememberKey').checked&&GKEY)localStorage.setItem('mrc_gkey',GKEY);
+    else localStorage.removeItem('mrc_gkey');
+  }catch(e){}
+  if(GKEY){ok.textContent='Key applied — Google Places will be used for discovery and location context.';ok.style.display='block';loadGoogle(GKEY);}
+  else{ok.textContent='No key — the tool will use OpenStreetMap fallback.';ok.style.display='block';}
+}
+
+var gReady=null;
+function loadGoogle(key){
+  if(window.google&&window.google.maps)return Promise.resolve();
+  if(gReady)return gReady;
+  gReady=new Promise(function(res,rej){
+    window.__gcb=function(){res()};
+    var s=document.createElement('script');
+    s.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(key)+'&libraries=places,geometry&callback=__gcb';
+    s.onerror=function(){gReady=null;rej(new Error('Google Maps failed to load — check the key'))};
+    document.head.appendChild(s);
+  });
+  return gReady;
+}
+
+var ocrReady=null;
+function loadOCR(){
+  if(window.Tesseract)return Promise.resolve();
+  if(ocrReady)return ocrReady;
+  ocrReady=new Promise(function(res,rej){
+    var s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+    s.onload=function(){res()}; s.onerror=function(){ocrReady=null;rej(new Error('OCR library failed to load'))};
+    document.head.appendChild(s);
+  });
+  return ocrReady;
+}
+async function runOCR(file,statusEl){
+  await loadOCR();
+  if(statusEl)statusEl.textContent='Reading image… this can take ~10-20 seconds';
+  var out=await Tesseract.recognize(file,'eng',{logger:function(m){if(statusEl&&m.status==='recognizing text')statusEl.textContent='Reading image… '+Math.round((m.progress||0)*100)+'%'}});
+  if(statusEl)statusEl.textContent='Image read — text extracted below';
+  return (out&&out.data&&out.data.text)||'';
+}
+function grabPastedImage(ev){
+  var items=(ev.clipboardData||{}).items||[];
+  for(var i=0;i<items.length;i++){ if(items[i].type&&items[i].type.indexOf('image')===0)return items[i].getAsFile(); }
+  return null;
+}
+
+function show(p){
+  document.querySelectorAll('.panel').forEach(function(el){el.classList.remove('show')});
+  document.getElementById('p'+p).classList.add('show');
+  document.querySelectorAll('#rail button').forEach(function(b){
+    var bp=+b.dataset.p;
+    b.classList.toggle('active',bp===p);
+    b.classList.toggle('done',bp<p&&bp<maxPhase&&bp<6);
+    if(bp<6)b.disabled=bp>maxPhase;
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openCompliance(){
+  var current=document.querySelector('.panel.show');
+  state.complianceReturnPhase=current?parseInt(current.id.replace('p',''),10)||1:1;
+  show(7);
+}
+function closeCompliance(){show(state.complianceReturnPhase&&state.complianceReturnPhase!==7?state.complianceReturnPhase:1)}
+document.querySelectorAll('#rail button').forEach(function(b){b.onclick=function(){show(+b.dataset.p)}});
+
+function loadFile(inp){
+  var f=inp.files[0]; if(!f)return;
+  var r=new FileReader(); r.onload=function(){document.getElementById('brief').value=r.result;parseBrief();}; r.readAsText(f);
+}
+function loadRecheckFile(inp){
+  var f=inp.files[0]; if(!f)return;
+  var r=new FileReader(); r.onload=function(){document.getElementById('recheckIn').value=r.result;}; r.readAsText(f);
+}
+
+function parseBrief(){
+  var t=document.getElementById('brief').value.trim();
+  var e1=document.getElementById('e1'); e1.style.display='none';
+  if(!t){e1.textContent='Paste or upload a brief first.';e1.style.display='block';return;}
+  var parsed=parseAnyBrief(t);
+  document.getElementById('assetClass').value=parsed.asset;
+  document.getElementById('addresses').value=parsed.addrs.join('\n');
+  document.getElementById('radius').value=parsed.radius;
+  document.getElementById('criteria').value=parsed.crit;
+  document.getElementById('parsedCard').style.display='block';
+  document.getElementById('parsedCard').scrollIntoView({behavior:'smooth'});
+  if(!parsed.addrs.length){e1.textContent='No address could be read automatically — type the subject address(es) below, one per line, and continue.';e1.style.display='block';}
+}
+
+function parseAnyBrief(t){
+  var addrs=[],radius=5,asset='Self-Storage',crit='';
+  var jsonMatch=t.match(/\{[\s\S]*\}/);
+  if(jsonMatch){
+    try{
+      var j=JSON.parse(jsonMatch[0]);
+      if(j.asset_class)asset=j.asset_class;
+      var locs=j.locations||(j.location?[j.location]:[]);
+      locs.forEach(function(l){
+        if(typeof l==='string')addrs.push(l);
+        else{if(l.address)addrs.push(l.address); if(l.radius_km)radius=l.radius_km;}
+      });
+      if(j.location&&j.location.radius_km)radius=j.location.radius_km;
+      if(j.radius_km)radius=j.radius_km;
+      if(j.criteria)crit=JSON.stringify(j.criteria,null,1).replace(/[{}"]/g,'').trim();
+      if(j.data_requirements)crit+=(crit?'\n':'')+'Data required: '+[].concat(j.data_requirements).join(', ');
+    }catch(err){}
+  }
+  if(!addrs.length){
+    var rm=t.match(/(\d+(?:\.\d+)?)\s*(?:km|kilomet)/i); if(rm)radius=parseFloat(rm[1]);
+    var suffix=/(street|st\.?(\s|,|$)|avenue|ave\.?(\s|,|$)|road|rd\.?(\s|,|$)|boulevard|blvd|drive|dr\.?(\s|,|$)|way(\s|,|$)|lane|court|crescent|cres|trail|parkway|pkwy|highway|hwy|place|pl\.?(\s|,|$))/i;
+    var postal=/[A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d/;
+    var ofm, ofRe=/(?:of|near|around|at)[:\s]+(\d{1,5}\s[^.\n;]{5,140})(?=\.|\n|;|$)/gi;
+    while((ofm=ofRe.exec(t))!==null){var cand=ofm[1].trim().replace(/["']/g,'');if(addrs.indexOf(cand)<0)addrs.push(cand);}
+    t.split('\n').forEach(function(l){
+      l=l.trim().replace(/^(?:[-•*]\s*|\d+[.)]\s+)/,'').replace(/["',;\s]+$/,'');
+      if(l.length>8&&l.length<120&&/^\d{1,5}\s/.test(l)&&(suffix.test(l)||postal.test(l)||/,/.test(l))&&addrs.indexOf(l)<0)addrs.push(l);
+    });
+    if(/retail/i.test(t))asset='Retail'; if(/industrial/i.test(t))asset='Industrial';
+    if(/\boffice\b/i.test(t))asset='Office'; if(/multi.?family|apartment/i.test(t))asset='Multifamily';
+    if(/self.?storage|storage/i.test(t))asset='Self-Storage';
+    var cm=t.match(/criteria[:\s]+([\s\S]{5,500}?)(\n\n|$)/i);
+    crit=cm?cm[1].trim():(t.length<600?t:'');
+  }
+  return {addrs:addrs.slice(0,10),radius:radius,asset:asset,crit:crit};
+}
+
+var GTYPE={'Self-Storage':'self storage','Retail':'shopping mall','Industrial':'warehouse','Office':'office building','Multifamily':'apartment building'};
+var OVERPASS={
+ 'Self-Storage':'nwr(around:R,LAT,LON)["shop"="storage_rental"];nwr(around:R,LAT,LON)["self_storage"];nwr(around:R,LAT,LON)["name"~"[Ss]torage"];',
+ 'Retail':'nwr(around:R,LAT,LON)["shop"="mall"];',
+ 'Industrial':'nwr(around:R,LAT,LON)["building"="warehouse"]["name"];',
+ 'Office':'nwr(around:R,LAT,LON)["building"="office"]["name"];',
+ 'Multifamily':'nwr(around:R,LAT,LON)["building"="apartments"]["name"];'
+};
+var OPERATORS=['publicstorage','extraspace','cubesmart','uhaul','u-haul','storagemart','access-storage','accessstorage','storwell','dymon','bluebird','smartstop','vaultra','green storage','greenstorage','depotium','sentinel'];
+
+function setMapLoading(showLoading,message){
+  var overlay=document.getElementById('mapLoading'),text=document.getElementById('mapLoadingText');
+  if(!overlay)return;
+  if(message&&text)text.textContent=message;
+  overlay.classList.toggle('show',!!showLoading);
+  overlay.setAttribute('aria-hidden',showLoading?'false':'true');
+}
+
+async function goSearch(){
+  state.addresses=document.getElementById('addresses').value.split('\n').map(function(s){return s.trim()}).filter(Boolean).slice(0,10);
+  state.radius=parseFloat(document.getElementById('radius').value)||5;
+  state.assetClass=document.getElementById('assetClass').value;
+  state.criteria=document.getElementById('criteria').value.trim();
+  var e1=document.getElementById('e1');
+  if(!state.addresses.length){e1.textContent='Enter at least one subject address.';e1.style.display='block';return;}
+  maxPhase=Math.max(maxPhase,2); show(2);
+  var st=document.getElementById('searchStatus'), e2=document.getElementById('e2');
+  document.getElementById('results').innerHTML=''; e2.style.display='none';
+  state.geocoded=[]; state.competitors=[]; state.selected=null; state.activeMapStop=null; state.routeVisible=true;
+  state.source=GKEY?'Google Places (Google Maps Platform)':'OpenStreetMap via Overpass API (fallback — no Google key supplied)';
+  document.getElementById('srcNote').textContent='Discovery source: '+state.source+'. Untick anything clearly irrelevant; leave borderline cases in, since comparability judgment belongs to your internal analysis.';
+  setMapLoading(true,GKEY?'Loading routes…':'Loading map…');
+  try{
+    if(GKEY){await loadGoogle(GKEY); await searchGoogle(st); await buildDrivingRoutes(st,false);}
+    else{await searchOSM(st);}
+    renderStats(); renderMap(); renderResults(); fillSubjSelect();
+    st.textContent='Search complete — '+state.competitors.length+' competitor(s) across '+state.geocoded.length+' subject location(s).';
+    if(!state.competitors.length){e2.innerHTML='No competitors found. '+(GKEY?'Try a wider radius.':'OpenStreetMap coverage is thin here — supplying a Google API key in step 1 gives professional coverage, or add competitors manually below.');e2.style.display='block';}
+  }catch(err){
+    st.textContent='';
+    e2.textContent='Search failed: '+err.message+'. Check the API key / network, or add competitors manually below.';
+    e2.style.display='block';
+    renderMap(); renderResults(); fillSubjSelect();
+  }finally{
+    setMapLoading(false);
+  }
+}
+
+function gGeocode(addr){
+  return new Promise(function(res,rej){
+    new google.maps.Geocoder().geocode({address:addr},function(r,s){
+      if(s==='OK'&&r.length){
+        var comp={}; r[0].address_components.forEach(function(c){c.types.forEach(function(t){comp[t]=c.long_name})});
+        res({lat:r[0].geometry.location.lat(),lon:r[0].geometry.location.lng(),display:r[0].formatted_address,
+          neighborhood:comp.neighborhood||comp.sublocality||comp.sublocality_level_1||'',
+          municipality:comp.locality||comp.administrative_area_level_3||'',
+          province:comp.administrative_area_level_1||''});
+      } else rej(new Error('Could not geocode "'+addr+'"'));
+    });
+  });
+}
+function gTextSearch(svc,query,loc,radiusM){
+  return new Promise(function(res){ svc.textSearch({query:query,location:loc,radius:radiusM},function(r,s){res(s==='OK'?r:[])}); });
+}
+function gNearby(svc,type,loc,radiusM){
+  return new Promise(function(res){ svc.nearbySearch({location:loc,radius:radiusM,type:type},function(r,s){res(s==='OK'?r:[])}); });
+}
+function gDetails(svc,pid){
+  return new Promise(function(res){ svc.getDetails({placeId:pid,fields:['website','formatted_phone_number','rating','user_ratings_total']},function(r,s){res(s==='OK'?r:{})}); });
+}
+
+async function newTextSearch(query,center,radiusM){
+  var lib=await google.maps.importLibrary('places');
+  var req={textQuery:query,fields:['displayName','formattedAddress','location','rating','userRatingCount','websiteURI','nationalPhoneNumber','id'],locationBias:{center:center,radius:Math.min(radiusM,50000)},maxResultCount:20};
+  var out=await lib.Place.searchByText(req);
+  return out.places||[];
+}
+async function newNearby(center,radiusM,type){
+  var lib=await google.maps.importLibrary('places');
+  var out=await lib.Place.searchNearby({fields:['displayName','location'],locationRestriction:{center:center,radius:Math.min(radiusM,50000)},includedTypes:[type],maxResultCount:10});
+  return out.places||[];
+}
+async function newNearbyTypes(center,radiusM,types){
+  var lib=await google.maps.importLibrary('places');
+  var out=await lib.Place.searchNearby({fields:['displayName','location','primaryType'],locationRestriction:{center:center,radius:Math.min(radiusM,50000)},includedTypes:types,maxResultCount:20});
+  return out.places||[];
+}
+
+async function searchGoogle(st){
+  var gmap=new google.maps.Map(document.getElementById('map'),{center:{lat:43.65,lng:-79.38},zoom:11,mapTypeControl:false,streetViewControl:false});
+  state.map=gmap;
+  for(var i=0;i<state.addresses.length;i++){
+    var a=state.addresses[i];
+    st.textContent='Geocoding '+(i+1)+'/'+state.addresses.length+': '+a;
+    var g=await gGeocode(a);
+    g.address=a; g.transit=[]; g.contextPlaces=[];
+    state.geocoded.push(g);
+    var loc=new google.maps.LatLng(g.lat,g.lon);
+    st.textContent='Searching Google Places near '+a+' \u2026';
+    var queries=state.assetClass==='Self-Storage'?['self storage near '+(g.municipality||a),'storage units near '+(g.municipality||a)]:[(GTYPE[state.assetClass]||'self storage')+' near '+(g.municipality||a)];
+    var seen={};
+    for(var qi=0;qi<queries.length;qi++){
+      var places=await newTextSearch(queries[qi],loc,state.radius*1000);
+      for(var r=0;r<places.length;r++){
+        var p=places[r];
+        if(!p.location)continue;
+        var plat=p.location.lat(), plon=p.location.lng();
+        var dist=haversine(g.lat,g.lon,plat,plon);
+        if(dist>state.radius*1.15)continue;
+        var key=p.id||((p.displayName||'')+Math.round(plat*500));
+        if(seen[key])continue; seen[key]=1;
+        state.competitors.push({subject:a,name:p.displayName||'Unknown',addr:p.formattedAddress||'',web:p.websiteURI||'',phone:p.nationalPhoneNumber||'',rating:p.rating||null,ratings:p.userRatingCount||null,lat:plat,lon:plon,dist:dist,include:true,manual:false,discovered:'Google Places'});
+      }
+      await new Promise(function(x){setTimeout(x,200)});
+    }
+    st.textContent='Finding transit stations near '+a+' \u2026';
+    try{
+      var tr=await newNearby(loc,1200,'transit_station');
+      g.transit=tr.map(function(t){
+        return {name:t.displayName||'Station',dist:haversine(g.lat,g.lon,t.location.lat(),t.location.lng()),lat:t.location.lat(),lon:t.location.lng()};
+      }).sort(function(x,y){return x.dist-y.dist});
+    }catch(te){ g.transit=[]; }
+    st.textContent='Reading named places around '+a+' …';
+    try{
+      var nearby=await newNearbyTypes(loc,2500,['shopping_mall','supermarket','city_park','general_hospital','university','train_station']);
+      g.contextPlaces=nearby.filter(function(p){return p.location}).map(function(p){
+        return {name:p.displayName||'Named place',type:p.primaryType||'place',dist:haversine(g.lat,g.lon,p.location.lat(),p.location.lng()),lat:p.location.lat(),lon:p.location.lng()};
+      }).sort(function(x,y){return x.dist-y.dist}).slice(0,12);
+    }catch(pe){g.contextPlaces=[];}
+    state.competitors.sort(function(x,y){return x.dist-y.dist});
+  }
+}
+
+async function searchOSM(st){
+  for(var i=0;i<state.addresses.length;i++){
+    var a=state.addresses[i];
+    st.textContent='Geocoding '+(i+1)+'/'+state.addresses.length+': '+a;
+    var g=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&q='+encodeURIComponent(a)).then(function(r){return r.json()});
+    if(!g.length)continue;
+    var ad=g[0].address||{};
+    state.geocoded.push({address:a,lat:+g[0].lat,lon:+g[0].lon,display:g[0].display_name,neighborhood:ad.neighbourhood||ad.suburb||'',municipality:ad.city||ad.town||'',province:ad.state||'',transit:[],contextPlaces:[]});
+    st.textContent='Searching OpenStreetMap near '+a+' …';
+    var q='[out:json][timeout:25];('+(OVERPASS[state.assetClass]||OVERPASS['Self-Storage']).replace(/R/g,Math.round(state.radius*1000)).replace(/LAT/g,+g[0].lat).replace(/LON/g,+g[0].lon)+');out center tags;';
+    var ov=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'}}).then(function(r){return r.json()});
+    var seen={};
+    (ov.elements||[]).forEach(function(el){
+      var tg=el.tags||{}; if(!tg.name)return;
+      var clat=el.lat||(el.center&&el.center.lat), clon=el.lon||(el.center&&el.center.lon);
+      if(clat==null)return;
+      var key=tg.name.toLowerCase()+Math.round(clat*500);
+      if(seen[key])return; seen[key]=1;
+      state.competitors.push({subject:a,name:tg.name,addr:[tg['addr:housenumber'],tg['addr:street'],tg['addr:city']].filter(Boolean).join(' '),web:tg.website||'',phone:tg.phone||'',rating:null,ratings:null,lat:clat,lon:clon,dist:haversine(+g[0].lat,+g[0].lon,clat,clon),include:true,manual:false,discovered:'OpenStreetMap'});
+    });
+    state.competitors.sort(function(x,y){return x.dist-y.dist});
+    await new Promise(function(r){setTimeout(r,1100)});
+  }
+}
+
+function haversine(a,b,c,d){var R=6371,p=Math.PI/180,x=(c-a)*p,y=(d-b)*p,h=Math.sin(x/2)**2+Math.cos(a*p)*Math.cos(c*p)*Math.sin(y/2)**2;return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function today(){return new Date().toISOString().slice(0,10)}
+
+var MAP_LABELS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+var MAX_MAP_COMPETITORS=12;
+var SIMPLE_MAP_STYLES=[
+  {featureType:'poi.business',elementType:'labels.icon',stylers:[{visibility:'off'}]},
+  {featureType:'poi.business',elementType:'labels.text',stylers:[{visibility:'simplified'}]},
+  {featureType:'road',elementType:'labels.icon',stylers:[{visibility:'off'}]}
+];
+var DARK_MAP_STYLES=[
+  {elementType:'geometry',stylers:[{color:'#101216'}]},
+  {elementType:'labels.icon',stylers:[{visibility:'off'}]},
+  {elementType:'labels.text.fill',stylers:[{color:'#9da4ae'}]},
+  {elementType:'labels.text.stroke',stylers:[{color:'#101216'},{weight:3}]},
+  {featureType:'administrative.locality',elementType:'labels.text.fill',stylers:[{color:'#e0e4ea'}]},
+  {featureType:'poi',elementType:'geometry',stylers:[{color:'#171a20'}]},
+  {featureType:'poi',elementType:'labels.text.fill',stylers:[{color:'#9299a3'}]},
+  {featureType:'poi.park',elementType:'geometry',stylers:[{color:'#152019'}]},
+  {featureType:'poi.park',elementType:'labels.text.fill',stylers:[{color:'#799985'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#242830'}]},
+  {featureType:'road',elementType:'geometry.stroke',stylers:[{color:'#111318'}]},
+  {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#adb3bc'}]},
+  {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#343942'}]},
+  {featureType:'road.highway',elementType:'labels.text.fill',stylers:[{color:'#d7dbe1'}]},
+  {featureType:'transit',elementType:'geometry',stylers:[{color:'#1a1d23'}]},
+  {featureType:'transit.station',elementType:'labels.icon',stylers:[{visibility:'on'}]},
+  {featureType:'water',elementType:'geometry',stylers:[{color:'#0b1a28'}]},
+  {featureType:'water',elementType:'labels.text.fill',stylers:[{color:'#70879a'}]}
+];
+function mapLabel(i){return MAP_LABELS.charAt(i)||String(i+1)}
+function normalizedFacilityAddress(s){return String(s||'').toLowerCase().replace(/\b(unit|suite|building|bldg)\s*[a-z0-9-]+\b/g,'').replace(/[^a-z0-9]/g,'')}
+function samePhysicalFacility(a,b){
+  var aa=normalizedFacilityAddress(a.addr),bb=normalizedFacilityAddress(b.addr);
+  if(aa&&bb&&aa===bb)return true;
+  return a.lat!=null&&b.lat!=null&&haversine(+a.lat,+a.lon,+b.lat,+b.lon)<=.035;
+}
+function distinctFacilities(list){
+  var out=[];
+  list.forEach(function(c){
+    var rep=out.find(function(x){return samePhysicalFacility(x,c)});
+    if(rep){rep.mapListingCount++;if(rep.mapListingNames.indexOf(c.name)<0)rep.mapListingNames.push(c.name);}
+    else{c.mapListingCount=1;c.mapListingNames=[c.name];out.push(c);}
+  });
+  return out;
+}
+function getMapStops(g,selectedOnly,maxStops){
+  var pool=selectedOnly&&state.selected?state.selected:state.competitors.filter(function(c){return c.include!==false});
+  var mapped=pool.filter(function(c){return c.include!==false&&c.subject===g.address&&c.lat!=null&&c.lon!=null})
+    .slice().sort(function(a,b){return a.dist-b.dist});
+  return distinctFacilities(mapped).slice(0,maxStops==null?MAX_MAP_COMPETITORS:maxStops);
+}
+function mapStopIndex(stops,c){return stops.findIndex(function(s){return samePhysicalFacility(s,c)})}
+function isCoLocated(g,c){return c&&c.lat!=null&&c.lon!=null&&haversine(+g.lat,+g.lon,+c.lat,+c.lon)<=.08}
+function mapDisplayPosition(g,c,i){
+  if(!isCoLocated(g,c))return {lat:+c.lat,lng:+c.lon};
+  var angle=(35+(i||0)*72)*Math.PI/180,d=.00028;
+  return {lat:+g.lat+d*Math.sin(angle),lng:+g.lon+d*Math.cos(angle)/Math.max(.25,Math.cos(+g.lat*Math.PI/180))};
+}
+function routePoint(p){
+  return {lat:typeof p.lat==='function'?p.lat():+p.lat,lng:typeof p.lng==='function'?p.lng():+p.lng};
+}
+function routeDuration(ms){
+  var mins=Math.max(1,Math.round((ms||0)/60000)),h=Math.floor(mins/60),m=mins%60;
+  return (h?h+' hr ':'')+(m?m+' min':(!h?'0 min':''));
+}
+function routeSummary(g){
+  var coLocated=(g.routeStops||[]).filter(function(c){return isCoLocated(g,c)}).length;
+  var coPrefix=coLocated?(coLocated+' co-located facilit'+(coLocated===1?'y':'ies')+' shown at A · '):'';
+  if(g.staticRouteOmitted)return 'Optimized route calculated, but the road line was too detailed for the printable map URL; lettered stops are still shown.';
+  if(g.routePolyline)return coPrefix+'optimized round trip from A · '+((g.routeDistanceMeters||0)/1000).toFixed(1)+' km · '+routeDuration(g.routeDurationMillis);
+  if(g.routeError==='Selections changed')return 'Selections changed — refresh the route, or continue and the report will refresh it automatically.';
+  if(g.routeError)return 'Lettered locations shown; driving route unavailable. Enable the Routes API for the blue road route.';
+  if(coLocated)return coLocated+' mapped facilit'+(coLocated===1?'y is':'ies are')+' co-located with the subject; no driving leg is needed.';
+  return 'Lettered locations shown; no driving route was needed.';
+}
+
+async function buildDrivingRoutes(statusEl,selectedOnly){
+  if(!(GKEY&&window.google&&window.google.maps&&google.maps.importLibrary))return;
+  var Route;
+  try{Route=(await google.maps.importLibrary('routes')).Route;}
+  catch(libErr){
+    state.geocoded.forEach(function(g){g.routeError=libErr.message||'Routes library unavailable';g.route=null;g.routePolyline='';});
+    return;
+  }
+  for(var gi=0;gi<state.geocoded.length;gi++){
+    var g=state.geocoded[gi],stops=getMapStops(g,selectedOnly);
+    var coLocatedStops=stops.filter(function(c){return isCoLocated(g,c)}),driveStops=stops.filter(function(c){return !isCoLocated(g,c)});
+    var routeKey=stops.map(function(c){return (+c.lat).toFixed(6)+','+(+c.lon).toFixed(6)}).join('|');
+    if(routeKey&&g.routeInputKey===routeKey&&g.route&&g.routePolyline)continue;
+    g.routeStops=stops; g.route=null; g.routePath=[]; g.routePolyline=''; g.routeError='';
+    g.routeDistanceMeters=0; g.routeDurationMillis=0;
+    g.routeInputKey='';
+    if(!stops.length||!driveStops.length)continue;
+    if(statusEl)statusEl.textContent='Building optimized driving route '+(gi+1)+'/'+state.geocoded.length+' …';
+    try{
+      var response=await Route.computeRoutes({
+        origin:{lat:g.lat,lng:g.lon},
+        destination:{lat:g.lat,lng:g.lon},
+        intermediates:driveStops.map(function(c){return {location:{lat:c.lat,lng:c.lon}}}),
+        travelMode:'DRIVING',
+        optimizeWaypointOrder:driveStops.length>1,
+        polylineQuality:'OVERVIEW',
+        fields:['path','distanceMeters','durationMillis','optimizedIntermediateWaypointIndices']
+      });
+      if(!response.routes||!response.routes.length)throw new Error('No route returned');
+      var route=response.routes[0],order=route.optimizedIntermediateWaypointIndices||[];
+      g.routeStops=coLocatedStops.concat(order.length===driveStops.length?order.map(function(i){return driveStops[i]}):driveStops);
+      g.route=route;
+      g.routePath=(route.path||[]).map(routePoint);
+      g.routePolyline=g.routePath.length&&google.maps.geometry&&google.maps.geometry.encoding?google.maps.geometry.encoding.encodePath(g.routePath):'';
+      g.routeDistanceMeters=route.distanceMeters||0;
+      g.routeDurationMillis=route.durationMillis||0;
+      g.routeInputKey=routeKey;
+    }catch(routeErr){
+      g.routeError=routeErr.message||'Route unavailable';
+      g.route=null; g.routePath=[]; g.routePolyline='';
+    }
+  }
+}
+
+async function refreshRoute(){
+  var btn=document.getElementById('refreshRouteBtn'),st=document.getElementById('routeStatus');
+  if(!GKEY){st.textContent='Add a Google Maps API key in step 1 to build a driving route.';return;}
+  btn.disabled=true; btn.textContent='Refreshing route…';
+  setMapLoading(true,'Loading routes…');
+  try{
+    await buildDrivingRoutes(st,false);
+    renderMap(); renderResults();
+  }finally{
+    setMapLoading(false);
+    btn.disabled=false; btn.textContent='Refresh route after selections';
+  }
+}
+
+function toggleCompetitor(i,checked){
+  state.competitors[i].include=checked;
+  state.activeMapStop=null;
+  var detail=document.getElementById('mapDetail');if(detail){detail.classList.remove('show');detail.innerHTML='';}
+  var g=state.geocoded.find(function(x){return x.address===state.competitors[i].subject});
+  if(g){g.routeError='Selections changed';g.route=null;g.routePath=[];g.routePolyline='';g.routeInputKey='';g.routeStops=getMapStops(g,false)}
+  renderMap(); renderResults();
+}
+
+function addMapCallout(map,position,letter,title,left,subject){
+  function Callout(){this.position=position;this.div=null;}
+  Callout.prototype=new google.maps.OverlayView();
+  Callout.prototype.onAdd=function(){
+    var d=document.createElement('div');d.className='gmap-callout'+(left?' left':'')+(subject?' subject':'');
+    d.textContent=letter+' · '+title;this.div=d;this.getPanes().overlayMouseTarget.appendChild(d);
+  };
+  Callout.prototype.draw=function(){
+    var p=this.getProjection().fromLatLngToDivPixel(new google.maps.LatLng(this.position));
+    if(this.div&&p){this.div.style.left=p.x+'px';this.div.style.top=p.y+'px';}
+  };
+  Callout.prototype.onRemove=function(){if(this.div){this.div.remove();this.div=null;}};
+  var overlay=new Callout();overlay.setMap(map);return overlay;
+}
+
+function renderStats(){
+  var n=state.competitors.length;
+  var withWeb=state.competitors.filter(function(c){return c.web}).length;
+  var avgD=n?state.competitors.reduce(function(s,c){return s+c.dist},0)/n:0;
+  document.getElementById('stats').innerHTML='<div class="stat"><div class="v">'+state.geocoded.length+'</div><div class="k">Properties</div></div>'+
+   '<div class="stat"><div class="v">'+n+'</div><div class="k">Competitors</div></div>'+
+   '<div class="stat"><div class="v">'+withWeb+'</div><div class="k">With websites</div></div>'+
+   '<div class="stat"><div class="v">'+(n?avgD.toFixed(1)+' km':'—')+'</div><div class="k">Avg distance</div></div>';
+}
+
+function mapMarkerIcon(subject,active){
+  return {path:google.maps.SymbolPath.CIRCLE,scale:subject?14:(active?13:11),fillColor:active?'#087c67':(subject?'#dc5b49':'#17313b'),fillOpacity:1,strokeColor:'#fff',strokeWeight:active?3:2.5};
+}
+
+function renderMapMetrics(){
+  var el=document.getElementById('mapMetrics');if(!el)return;
+  var facilities=state.geocoded.reduce(function(n,g){return n+((g.routeStops&&g.routeStops.length)?g.routeStops:getMapStops(g,false)).length},0);
+  var meters=state.geocoded.reduce(function(n,g){return n+(g.routeDistanceMeters||0)},0);
+  var millis=state.geocoded.reduce(function(n,g){return n+(g.routeDurationMillis||0)},0);
+  el.innerHTML='<span class="map-metrics-dot"></span><span>'+facilities+' facilit'+(facilities===1?'y':'ies')+(meters?' · '+(meters/1000).toFixed(1)+' km · '+routeDuration(millis):'')+'</span>';
+}
+
+function renderRouteDock(){
+  var dock=document.getElementById('routeDock');if(!dock)return;
+  if(!state.geocoded.length){dock.innerHTML='<div class="route-dock-empty">Route stops will appear here after discovery.</div>';return;}
+  dock.innerHTML=state.geocoded.map(function(g,gi){
+    var stops=(g.routeStops&&g.routeStops.length)?g.routeStops:getMapStops(g,false);
+    var active=state.activeMapStop||{};
+    var cards='<div class="route-stop-wrap"><button type="button" data-route-gi="'+gi+'" data-route-si="-1" class="route-stop subject '+(active.gi===gi&&active.si===-1?'active':'')+'" onclick="focusMapLocation('+gi+',-1)"><span class="route-stop-top"><span class="route-stop-badge">A</span><span class="route-stop-name">Subject property</span></span><span class="route-stop-sub">'+esc(g.address)+'</span></button></div>';
+    stops.forEach(function(c,si){
+      cards+='<div class="route-stop-wrap"><span class="route-connector"></span><button type="button" data-route-gi="'+gi+'" data-route-si="'+si+'" class="route-stop '+(active.gi===gi&&active.si===si?'active':'')+'" onclick="focusMapLocation('+gi+','+si+')"><span class="route-stop-top"><span class="route-stop-badge">'+mapLabel(si+1)+'</span><span class="route-stop-name">'+esc(c.name)+'</span></span><span class="route-stop-sub">'+(isCoLocated(g,c)?'Co-located':c.dist.toFixed(1)+' km from subject')+(c.rating?' · '+c.rating+'★':'')+'</span></button></div>';
+    });
+    return '<div class="route-dock-group"><div class="route-dock-head"><div class="route-dock-head-copy"><b>'+esc(g.address)+'</b><span>'+routeSummary(g)+'</span></div><div class="route-dock-controls"><span class="route-dock-count">'+(stops.length+1)+' stops</span><button class="route-scroll-btn" type="button" aria-label="Previous route stops" onclick="scrollRouteDock('+gi+',-1)">‹</button><button class="route-scroll-btn" type="button" aria-label="Next route stops" onclick="scrollRouteDock('+gi+',1)">›</button></div></div><div class="route-track" id="routeTrack'+gi+'">'+cards+'</div></div>';
+  }).join('');
+}
+
+function scrollRouteDock(gi,direction){
+  var track=document.getElementById('routeTrack'+gi);if(!track)return;
+  track.scrollBy({left:direction*Math.max(240,track.clientWidth*.72),behavior:'smooth'});
+}
+
+function updateRouteDockSelection(){
+  var active=state.activeMapStop;
+  document.querySelectorAll('#routeDock .route-stop').forEach(function(button){
+    var selected=!!active&&+button.dataset.routeGi===active.gi&&+button.dataset.routeSi===active.si;
+    button.classList.toggle('active',selected);
+  });
+}
+
+function closeMapDetail(){
+  var d=document.getElementById('mapDetail');if(d){d.classList.remove('show');d.innerHTML='';}
+  state.activeMapStop=null;updateRouteDockSelection();
+  (state.mapLocations||[]).forEach(function(x){x.marker.setIcon(mapMarkerIcon(x.si===-1,false));x.marker.setZIndex(x.si===-1?8:7)});
+}
+
+function showMapDetail(loc){
+  var d=document.getElementById('mapDetail');if(!d)return;
+  var g=state.geocoded[loc.gi],c=loc.si<0?null:loc.competitor;
+  var title=c?c.name:g.address,address=c?(c.addr||g.address):(g.display||g.address);
+  var meta=c?'<div class="map-detail-meta"><span>'+(isCoLocated(g,c)?'Co-located':c.dist.toFixed(1)+' km')+'</span>'+(c.rating?'<span>'+c.rating+'★ · '+(c.ratings||0)+' reviews</span>':'')+(c.mapListingCount>1?'<span>'+c.mapListingCount+' listings consolidated</span>':'')+'</div>':'';
+  var actions='';
+  if(c){
+    var ci=state.competitors.indexOf(c);
+    actions='<div class="map-detail-actions">'+(c.web?'<a href="'+esc(c.web)+'" target="_blank" rel="noopener">Visit website</a>':'')+(ci>=0?'<button type="button" onclick="toggleCompetitor('+ci+','+(!c.include)+')">'+(c.include?'Exclude':'Include')+'</button>':'')+'</div>';
+  }
+  d.innerHTML='<button class="map-detail-close" type="button" aria-label="Close facility details" onclick="closeMapDetail()">×</button><div class="map-detail-label">'+(c?mapLabel(loc.si+1)+' · FACILITY':'A · SUBJECT PROPERTY')+'</div><h3>'+esc(title)+'</h3><p>'+esc(address)+'</p>'+meta+actions;
+  d.classList.add('show');
+}
+
+function focusMapLocation(gi,si){
+  var loc=(state.mapLocations||[]).find(function(x){return x.gi===gi&&x.si===si});if(!loc||!state.map)return;
+  state.activeMapStop={gi:gi,si:si};
+  state.map.panTo(loc.position);if(state.map.getZoom()<15)state.map.setZoom(15);
+  (state.mapLocations||[]).forEach(function(x){var on=x===loc;x.marker.setIcon(mapMarkerIcon(x.si===-1,on));x.marker.setZIndex(on?20:(x.si===-1?8:7))});
+  updateRouteDockSelection();showMapDetail(loc);
+}
+
+function focusMapCompetitor(index){
+  var c=state.competitors[index];if(!c)return;
+  var gi=state.geocoded.findIndex(function(g){return g.address===c.subject});if(gi<0)return;
+  var g=state.geocoded[gi],stops=(g.routeStops&&g.routeStops.length)?g.routeStops:getMapStops(g,false),si=mapStopIndex(stops,c);
+  if(si>=0)focusMapLocation(gi,si);
+}
+
+function fitMapView(){if(state.map&&state.mapBounds&&!state.mapBounds.isEmpty())state.map.fitBounds(state.mapBounds,58)}
+
+function toggleRouteVisibility(){
+  state.routeVisible=state.routeVisible===false;
+  (state.mapRouteLines||[]).forEach(function(p){p.setMap(state.routeVisible?state.map:null)});
+  var b=document.getElementById('routeVisibilityBtn');if(b)b.textContent=state.routeVisible?'Hide route':'Show route';
+}
+
+function renderMap(){
+  var mapDiv=document.getElementById('map');
+  if(!(window.google&&window.google.maps)){
+    mapDiv.innerHTML='<div style="padding:24px;color:var(--faint);font-size:13px">Interactive map requires a Google API key (step 1). Discovery results are listed below.</div>';
+    renderRouteDock();return;
+  }
+  var gmap=new google.maps.Map(mapDiv,{mapTypeControl:false,streetViewControl:false,fullscreenControl:false,clickableIcons:false,styles:state.darkMode?DARK_MAP_STYLES:SIMPLE_MAP_STYLES,zoomControl:true});
+  state.map=gmap;state.mapMarkers=[];state.mapLocations=[];state.mapRouteLines=[];state.routeVisible=state.routeVisible!==false;
+  var bounds=new google.maps.LatLngBounds();state.mapBounds=bounds;
+  state.geocoded.forEach(function(g,gi){
+    var pos={lat:g.lat,lng:g.lon};
+    if((g.routePath||[]).length){
+      var casing=new google.maps.Polyline({map:state.routeVisible?gmap:null,path:g.routePath,strokeColor:'#ffffff',strokeOpacity:.92,strokeWeight:9,zIndex:2});
+      var line=new google.maps.Polyline({map:state.routeVisible?gmap:null,path:g.routePath,strokeColor:'#246bce',strokeOpacity:.95,strokeWeight:5,zIndex:3,icons:[{icon:{path:google.maps.SymbolPath.FORWARD_CLOSED_ARROW,scale:2,strokeColor:'#ffffff',fillColor:'#ffffff',fillOpacity:1},offset:'4%',repeat:'12%'}]});
+      state.mapRouteLines.push(casing,line);g.routePath.forEach(function(p){bounds.extend(p)});
+    }
+    var sm=new google.maps.Marker({map:gmap,position:pos,title:'A · Subject: '+g.address,label:{text:'A',color:'#fff',fontSize:'12px',fontWeight:'700'},zIndex:8,icon:mapMarkerIcon(true,false)});
+    var subjectLoc={gi:gi,si:-1,g:g,competitor:null,marker:sm,position:pos};state.mapLocations.push(subjectLoc);state.mapMarkers.push(sm);
+    sm.addListener('click',function(){focusMapLocation(gi,-1)});bounds.extend(pos);
+    var stops=(g.routeStops&&g.routeStops.length)?g.routeStops:getMapStops(g,false);
+    stops.forEach(function(c,si){
+      var letter=mapLabel(si+1),cpos=mapDisplayPosition(g,c,si);
+      var m=new google.maps.Marker({map:gmap,position:cpos,title:letter+' · '+c.name,label:{text:letter,color:'#fff',fontSize:'11px',fontWeight:'700'},zIndex:7,icon:mapMarkerIcon(false,false)});
+      var loc={gi:gi,si:si,g:g,competitor:c,marker:m,position:cpos};state.mapLocations.push(loc);state.mapMarkers.push(m);
+      m.addListener('click',function(){focusMapLocation(gi,si)});bounds.extend(cpos);
+    });
+  });
+  fitMapView();
+  google.maps.event.addListenerOnce(gmap,'idle',function(){if(gmap.getZoom()>14)gmap.setZoom(14)});
+  renderMapMetrics();renderRouteDock();
+  var rb=document.getElementById('routeVisibilityBtn');if(rb)rb.textContent=state.routeVisible?'Hide route':'Show route';
+  var rs=document.getElementById('routeStatus');
+  if(rs){
+    var summaries=state.geocoded.map(routeSummary);
+    var capped=state.geocoded.some(function(g){return getMapStops(g,false,9999).length>MAX_MAP_COMPETITORS});
+    rs.textContent=summaries.join(' · ')+(capped?' · Closest '+MAX_MAP_COMPETITORS+' competitors shown per property for legibility.':'');
+  }
+}
+
+function renderResults(){
+  var res=document.getElementById('results'); res.innerHTML='';
+  state.geocoded.forEach(function(g){
+    var rows=state.competitors.map(function(c,i){
+      if(c.subject!==g.address)return '';
+      var link=c.web?'<a href="'+esc(c.web)+'" target="_blank" rel="noopener">website</a>':'<a href="https://www.google.com/search?q='+encodeURIComponent(c.name+' '+(c.addr||g.address))+'" target="_blank" rel="noopener">search</a>';
+      var stops=(g.routeStops&&g.routeStops.length)?g.routeStops:getMapStops(g,false),mi=mapStopIndex(stops,c),ml=mi>=0?mapLabel(mi+1):'—';
+      var rep=mi>=0?stops[mi]:null,mapNote=(rep&&rep.mapListingCount>1?' <span class="pill na">'+rep.mapListingCount+' listings · 1 location</span>':'')+(isCoLocated(g,c)?' <span class="pill found">co-located</span>':'');
+      return '<tr class="facility-row" onclick="focusMapCompetitor('+i+')"><td><input type="checkbox" '+(c.include?'checked':'')+' onclick="event.stopPropagation()" onchange="toggleCompetitor('+i+',this.checked)"></td><td class="dist"><b>'+ml+'</b></td><td><b>'+esc(c.name)+'</b>'+(c.manual?' <span class="pill warn">manual</span>':'')+mapNote+'<br><span class="dist">'+esc(c.addr||'')+'</span></td><td class="dist">'+c.dist.toFixed(1)+' km</td><td class="dist">'+(c.rating?c.rating+'★':'—')+'</td><td onclick="event.stopPropagation()">'+link+'</td></tr>';
+    }).join('');
+    res.insertAdjacentHTML('beforeend','<div class="addr-block"><h3>'+esc(g.address)+'</h3><div class="meta">geocoded: '+esc(String(g.display).split(',').slice(0,3).join(','))+' &middot; radius '+state.radius+' km &middot; transit stations within 1.2 km: '+((g.transit||[]).length||0)+'</div></div><table><tr><th></th><th>Map</th><th>Facility</th><th>Distance</th><th>Rating</th><th>Link</th></tr>'+(rows||'<tr><td colspan=6 class="dist">none found for this location</td></tr>')+'</table>');
+  });
+}
+
+function fillSubjSelect(){
+  var s=document.getElementById('manSubj');
+  s.innerHTML=state.geocoded.map(function(g){return '<option>'+esc(g.address)+'</option>'}).join('')||'<option></option>';
+}
+async function addManual(){
+  var n=document.getElementById('manName').value.trim();
+  if(!n)return;
+  var subject=document.getElementById('manSubj').value||(state.addresses[0]||''),addr=document.getElementById('manAddr').value.trim();
+  var c={subject:subject,name:n,addr:addr,web:document.getElementById('manWeb').value.trim(),phone:'',rating:null,ratings:null,lat:null,lon:null,dist:0,include:true,manual:true,discovered:'Manual entry'};
+  if(addr){
+    try{
+      var pos;
+      if(GKEY){await loadGoogle(GKEY);pos=await gGeocode(addr);}
+      else{
+        var nr=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(addr)).then(function(r){return r.json()});
+        if(nr.length)pos={lat:+nr[0].lat,lon:+nr[0].lon};
+      }
+      if(pos){
+        c.lat=+pos.lat;c.lon=+pos.lon;
+        var sg=state.geocoded.find(function(g){return g.address===subject});
+        if(sg)c.dist=haversine(sg.lat,sg.lon,c.lat,c.lon);
+      }else c.mapWarning='Address could not be geocoded';
+    }catch(ge){c.mapWarning='Address could not be geocoded';}
+  }
+  state.competitors.push(c);
+  document.getElementById('manName').value='';document.getElementById('manAddr').value='';document.getElementById('manWeb').value='';
+  var g=state.geocoded.find(function(x){return x.address===subject});
+  if(g){g.routeError='Selections changed';g.route=null;g.routePath=[];g.routePolyline='';g.routeInputKey='';g.routeStops=getMapStops(g,false)}
+  renderStats(); renderMap(); renderResults();
+  if(c.mapWarning){var st=document.getElementById('routeStatus');if(st)st.textContent='The manual competitor was added, but its address could not be placed on the map. Check the address and try adding it again.';}
+}
+
+/* ===== LOCATION OVERVIEW ===== */
+var LFIELDS=[
+ ['population','Population (latest census)'],['pop_growth','Population growth %'],['households','Total households'],
+ ['avg_hh','Avg household size'],['renter_pct','Renter-occupied %'],['median_income','Median household income'],
+ ['age_20_34','Age 20–34 %'],['age_35_49','Age 35–49 %'],
+ ['dwellings','Total dwelling units'],['pipeline_units','Units under construction'],['notable_projects','Notable developments'],
+ ['avg_unit_size','Avg residential unit size (sq ft)'],['condo_rate','Condo/apartment ownership %'],
+ ['employment','Employment / jobs nearby'],['major_employers','Major employers'],['office_vacancy','Office vacancy % (if office-adjacent)'],
+ ['walk_score','Walk Score'],['transit_score','Transit Score']
+];
+
+function locCite(g,field,source,url){
+  g.lcites=g.lcites||{};
+  g.lcites[field]={source:source,url:url||'',date:today()};
+}
+
+function goLocation(){
+  maxPhase=Math.max(maxPhase,3); show(3);
+  var wrap=document.getElementById('locCards'); wrap.innerHTML='';
+  document.getElementById('locProgress').textContent=state.geocoded.length+' propert'+(state.geocoded.length===1?'y':'ies')+' — work through each section per property. Auto-collected facts are already filled and cited.';
+  state.geocoded.forEach(function(g,gi){
+    g.loc=g.loc||{}; g.lcites=g.lcites||{};
+    LFIELDS.forEach(function(f){if(!(f[0]in g.loc))g.loc[f[0]]='Not available'});
+    var city=g.municipality||g.address;
+    var supply=state.competitors.filter(function(c){return c.subject===g.address}).length;
+    var trHtml=(g.transit&&g.transit.length)?g.transit.map(function(t){return esc(t.name)+' ('+(t.dist*1000).toFixed(0)+' m)'}).join('; '):'none found within 1.2 km (or no Google key)';
+    var overviewHtml=spatialOverviewSections(g).map(function(s){return '<div class="steps"><b>'+esc(s.title)+'</b><br>'+esc(s.text)+'</div>'}).join('');
+    var fields=LFIELDS.map(function(f){return '<div class="field"><div class="k">'+f[1]+'</div><input value="'+esc(g.loc[f[0]])+'" onchange="setLoc('+gi+',\''+f[0]+'\',this.value)"><div class="src" id="lsrc'+gi+'_'+f[0]+'">'+((g.lcites[f[0]]||{}).source||'')+'</div></div>'}).join('');
+    wrap.insertAdjacentHTML('beforeend',
+      '<div class="comp-card"><div class="comp-head"><h3>'+(gi+1)+'. '+esc(g.address)+'</h3><span class="pill found">auto facts collected</span></div>'+
+      '<h4>Auto-collected geographic context <span class="pill" style="background:var(--accent-bg);color:var(--accent-dark);border:1px solid var(--accent-line)">source: '+(GKEY?'Google Geocoding/Places':'OpenStreetMap')+' · '+today()+'</span></h4>'+
+      '<div class="srcline">Neighborhood: <b>'+esc(g.neighborhood||'Not available')+'</b> · Municipality: <b>'+esc(g.municipality||'Not available')+'</b> · Province: <b>'+esc(g.province||'Not available')+'</b> · Coordinates: <b>'+g.lat.toFixed(4)+', '+g.lon.toFixed(4)+'</b></div>'+
+      '<div class="srcline">Supply density: <b>'+supply+' '+esc(state.assetClass.toLowerCase())+' facilities within '+state.radius+' km</b> · Transit stations within 1.2 km: <b>'+((g.transit||[]).length)+'</b></div>'+
+      '<div class="srcline">Stations: '+trHtml+'</div>'+
+      '<h4>Map-readable location overview</h4>'+overviewHtml+
+      '<div class="srcline">Walkability: check <a href="https://www.walkscore.com/score/'+encodeURIComponent(g.address)+'" target="_blank" rel="noopener">Walk Score for this address</a> and paste the scores into the fields below if needed.</div>'+
+      '<h4>Demographics &amp; population — guided</h4>'+
+      '<div class="steps"><b>1.</b> Open the <a href="https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/index.cfm?Lang=E" target="_blank" rel="noopener">StatCan Census Profile</a> and search "'+esc(city)+'" &nbsp;<b>2.</b> Ctrl+A, Ctrl+C on the profile page &nbsp;<b>3.</b> Paste below — the tool extracts population, growth, households, income, renter share and age mix with a citation.</div>'+
+      '<textarea rows="3" class="mono" id="lta'+gi+'census" placeholder="Paste the Census Profile page here…" onpaste="handleLocPaste(event,'+gi+',\'census\')"></textarea>'+
+      '<label class="btn ghost sm" style="margin-top:6px">Or upload a screenshot<input type="file" accept="image/*" style="display:none" onchange="ocrLoc(this,'+gi+',\'census\')"></label>'+
+      '<div class="btn-row" style="margin-top:8px"><label class="btn ghost sm" style="margin:0">Or add a screenshot (OCR)<input type="file" accept="image/*" style="display:none" onchange="ocrFile(this,\'loc\','+gi+',\'census\')"></label><span class="progress" id="ocrl'+gi+'census"></span></div>'+
+      '<h4>Housing &amp; development pipeline — guided</h4>'+
+      '<div class="steps">Open <a href="https://www.google.com/search?q='+encodeURIComponent(city+' residential development pipeline units under construction')+'" target="_blank" rel="noopener">this search</a> or the city\'s planning page, copy the relevant page, paste below. Unit counts and project names are extracted where stated; otherwise fill the fields manually.</div>'+
+      '<textarea rows="3" class="mono" id="lta'+gi+'housing" placeholder="Paste development/planning page text here…" onpaste="handleLocPaste(event,'+gi+',\'housing\')"></textarea>'+
+      '<label class="btn ghost sm" style="margin-top:6px">Or upload a screenshot<input type="file" accept="image/*" style="display:none" onchange="ocrLoc(this,'+gi+',\'housing\')"></label>'+
+      '<div class="btn-row" style="margin-top:8px"><label class="btn ghost sm" style="margin:0">Or add a screenshot (OCR)<input type="file" accept="image/*" style="display:none" onchange="ocrFile(this,\'loc\','+gi+',\'housing\')"></label><span class="progress" id="ocrl'+gi+'housing"></span></div>'+
+      '<h4>Economic &amp; employment context — guided</h4>'+
+      '<div class="steps">Open <a href="https://www.google.com/search?q='+encodeURIComponent(city+' employment survey jobs major employers')+'" target="_blank" rel="noopener">this search</a> (e.g., municipal employment survey), copy the relevant page, paste below.</div>'+
+      '<textarea rows="3" class="mono" id="lta'+gi+'employment" placeholder="Paste employment/economic page text here…" onpaste="handleLocPaste(event,'+gi+',\'employment\')"></textarea>'+
+      '<label class="btn ghost sm" style="margin-top:6px">Or upload a screenshot<input type="file" accept="image/*" style="display:none" onchange="ocrLoc(this,'+gi+',\'employment\')"></label><div class="ok" id="locst'+gi+'" style="display:none"></div>'+
+      '<div class="btn-row" style="margin-top:8px"><label class="btn ghost sm" style="margin:0">Or add a screenshot (OCR)<input type="file" accept="image/*" style="display:none" onchange="ocrFile(this,\'loc\','+gi+',\'employment\')"></label><span class="progress" id="ocrl'+gi+'employment"></span></div>'+
+      '<h4>Location overview fields (editable — every value cited)</h4>'+
+      '<div class="grid2">'+fields+'</div></div>');
+  });
+}
+function setLoc(gi,k,v){
+  var g=state.geocoded[gi];
+  g.loc[k]=v.trim()||'Not available';
+  locCite(g,k,'Manual entry by user','');
+  var el=document.getElementById('lsrc'+gi+'_'+k); if(el)el.textContent='Manual entry by user';
+}
+
+function handleLocPaste(ev,gi,kind){
+  var img=grabPastedImage(ev);
+  if(img){
+    ev.preventDefault();
+    var stEl=ev.target.parentNode.querySelector('.ocrstat');
+    runOCR(img,stEl).then(function(txt){ ev.target.value+=(ev.target.value?'\n':'')+txt; processLocPaste(gi,kind,ev.target.value); });
+    return;
+  }
+  var ta=ev.target;
+  setTimeout(function(){ if(ta.value.length>=40)processLocPaste(gi,kind,ta.value); },50);
+}
+function ocrLocFile(inp,gi,kind){
+  var f=inp.files[0]; if(!f)return;
+  var card=inp.closest('.comp-card');
+  var stEl=inp.parentNode.parentNode.querySelector('.ocrstat');
+  runOCR(f,stEl).then(function(txt){
+    var ta=inp.closest('.locblock').querySelector('textarea');
+    ta.value+=(ta.value?'\n':'')+txt;
+    processLocPaste(gi,kind,ta.value);
+  }).catch(function(e){ if(stEl)stEl.textContent='OCR failed: '+e.message; });
+}
+function processLocPaste(gi,kind,txt){
+  var g=state.geocoded[gi];
+  var src=(kind==='census'?'Statistics Canada Census Profile (pasted by user)':kind==='housing'?'Municipal planning / development source (pasted by user)':'Employment / economic source (pasted by user)');
+  g.pastes=g.pastes||{};
+  g.pastes[kind]=txt.slice(0,6000);
+  extractLoc(txt,g,kind,src);
+  var card=document.querySelectorAll('#locCards .comp-card')[gi];
+  var inputs=card.querySelectorAll('.field input');
+  LFIELDS.forEach(function(f,j){
+    inputs[j].value=g.loc[f[0]];
+    var el=document.getElementById('lsrc'+gi+'_'+f[0]);
+    if(el&&g.lcites[f[0]])el.textContent=g.lcites[f[0]].source;
+  });
+}
+
+function num(s){return s?s.replace(/[, ]/g,''):s}
+function extractLoc(txt,g,kind,src){
+  var L=g.loc;
+  g.rawloc=g.rawloc||{};
+  g.rawloc[kind]=((g.rawloc[kind]||'')+'\n'+txt).slice(-9000);
+  function set(k,v){ if(v&&(L[k]==='Not available')){L[k]=v; locCite(g,k,src);} }
+  var m;
+  if(kind==='census'){
+    m=txt.match(/Population[,;]?\s*20\d\d[^0-9-]{0,50}([\d,]{4,12})/i)||txt.match(/(?:Total )?[Pp]opulation[^0-9%\n]{0,30}([\d,]{4,12})/);
+    if(m)set('population',num(m[1])+' (census)');
+    m=txt.match(/(?:percentage change|population.{0,30}change)[^%\-\d]{0,60}(-?\d+\.?\d*)\s*%?/i)||txt.match(/(?:grew|growth of|increased by)\s*(-?\d+\.?\d*)\s*%/i);
+    if(m)set('pop_growth',m[1]+'%');
+    m=txt.match(/(?:Total private dwellings|Private dwellings)[^0-9]{0,30}([\d,]{3,12})/i)||txt.match(/([\d,]{4,9})\s*(?:total )?dwelling/i);
+    if(m)set('dwellings',num(m[1]));
+    m=txt.match(/(?:Total.{0,25}households|Private households|Number of households)[^0-9]{0,40}([\d,]{3,12})/i)||txt.match(/([\d,]{4,9})\s*households/i);
+    if(m)set('households',num(m[1]));
+    m=txt.match(/Average household size[^0-9]{0,20}(\d\.?\d?)/i); if(m)set('avg_hh',m[1]);
+    m=txt.match(/[Rr]enter[^0-9%]{0,60}(\d{1,2}\.?\d?)\s*%/)||txt.match(/(\d{1,2}\.?\d?)\s*%[^.\n]{0,40}rent(?:er|ed)/i);
+    if(m)set('renter_pct',m[1]+'%');
+    else{m=txt.match(/Renter[^0-9]{0,60}([\d,]{2,10})/i); if(m)set('renter_pct',num(m[1])+' renter households (compute % vs total)');}
+    m=txt.match(/Median (?:total )?income of household[^$0-9]{0,50}\$?\s?([\d,]{4,9})/i)||txt.match(/[Mm]edian household income[^$0-9]{0,30}\$?\s?([\d,]{4,9})/);
+    if(m)set('median_income','$'+num(m[1]));
+    m=txt.match(/(?:20\s*to\s*34|20[\u2013-]34)[^%\n]{0,40}(\d{1,2}\.?\d?)\s*%/i); if(m)set('age_20_34',m[1]+'%');
+    m=txt.match(/(?:35\s*to\s*49|35[\u2013-]49)[^%\n]{0,40}(\d{1,2}\.?\d?)\s*%/i); if(m)set('age_35_49',m[1]+'%');
+  }
+  if(kind==='housing'){
+    m=txt.match(/([\d,]{3,7})\s*(?:units|dwellings|homes)[^.\n]{0,60}(?:under construction|being built|approved|proposed|in the pipeline)/i)||txt.match(/(?:under construction|approved|pipeline of)[^.\n]{0,60}?([\d,]{3,7})\s*(?:units|dwellings|homes)/i);
+    if(m)set('pipeline_units',num(m[1])+' (as stated in pasted source)');
+    var projs=[]; var pr=/([A-Z][A-Za-z0-9'&\- ]{3,45})\s*[:\u2013\-\u2014(]\s*([\d,]{3,6})\s*(?:units|homes)/g, pm;
+    while((pm=pr.exec(txt))!==null&&projs.length<6)projs.push(pm[1].trim()+' ('+num(pm[2])+' units)');
+    if(projs.length)set('notable_projects',projs.join('; '));
+    m=txt.match(/([\d,]{4,9})\s*(?:total )?dwelling/i); if(m)set('dwellings',num(m[1]));
+  }
+  if(kind==='employment'){
+    m=txt.match(/([\d,]{4,9})\s*(?:jobs|employees|workers|people employed)/i); if(m)set('employment',num(m[1])+' (as stated in pasted source)');
+    m=txt.match(/office vacancy[^0-9]{0,30}(\d+\.?\d*)\s*%/i); if(m)set('office_vacancy',m[1]+'%');
+    var emps=[]; var er=/(?:employers?|companies)[^.\n]{0,20}(?:include|such as|:)\s*([^.\n]{10,140})/i;
+    m=txt.match(er); if(m)set('major_employers',m[1].trim().slice(0,140));
+  }
+}
+
+/* ===== OCR (screenshot input) ===== */
+function loadTess(){
+  if(window.Tesseract)return Promise.resolve();
+  if(window.__tessP)return window.__tessP;
+  window.__tessP=new Promise(function(res,rej){
+    var s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+    s.onload=res; s.onerror=function(){rej(new Error('OCR library failed to load'))};
+    document.head.appendChild(s);
+  });
+  return window.__tessP;
+}
+async function ocrFile(inp,statusId,onText){
+  var f=inp.files[0]; if(!f)return;
+  var st=document.getElementById(statusId);
+  try{
+    if(st){st.textContent='Reading image \u2014 this takes ~10-20 seconds\u2026';st.style.display='block';}
+    await loadTess();
+    var r=await Tesseract.recognize(f,'eng');
+    if(st){st.textContent='Image read \u2014 text extracted and processed.';setTimeout(function(){st.style.display='none'},4000);}
+    onText(r.data.text||'');
+  }catch(e){
+    if(st){st.textContent='Could not read image ('+e.message+') \u2014 paste the text manually instead.';}
+  }
+  inp.value='';
+}
+function ocrLoc(inp,gi,kind){
+  ocrFile(inp,'locst'+gi,function(text){
+    if(text.length<30)return;
+    var g=state.geocoded[gi];
+    var src=(kind==='census'?'Statistics Canada Census Profile (screenshot, OCR)':kind==='housing'?'Municipal planning / development source (screenshot, OCR)':'Employment / economic source (screenshot, OCR)');
+    extractLoc(text,g,kind,src);
+    var card=document.querySelectorAll('#locCards .comp-card')[gi];
+    var inputs=card.querySelectorAll('.field input');
+    LFIELDS.forEach(function(f,j){
+      inputs[j].value=g.loc[f[0]];
+      var el=document.getElementById('lsrc'+gi+'_'+f[0]);
+      if(el&&g.lcites[f[0]])el.textContent=g.lcites[f[0]].source;
+    });
+  });
+}
+function ocrComp(inp,idx){
+  ocrFile(inp,'compst'+idx,function(text){
+    if(text.length<30)return;
+    var c=state.selected[idx];
+    extract(text,c);
+    c.pasted=true;
+    var card=document.querySelectorAll('#compCards .comp-card')[idx];
+    var inputs=card.querySelectorAll('.field input');
+    FIELDS.forEach(function(f,j){
+      inputs[j].value=c.data[f[0]];
+      var el=document.getElementById('src'+idx+'_'+f[0]);
+      if(el&&c.cites[f[0]])el.textContent=c.cites[f[0]].source;
+    });
+    var st=document.getElementById('st'+idx); st.textContent='data extracted'; st.className='pill found';
+    updateProgress();
+  });
+}
+
+/* ===== COMPETITOR COLLECTION ===== *//* ===== COMPETITOR COLLECTION ===== */
+var FIELDS=[['rate_5x5','5×5 monthly rate'],['rate_5x10','5×10 monthly rate'],['rate_10x10','10×10 monthly rate'],['rate_10x15','10×15 monthly rate'],['rate_10x20','10×20 monthly rate'],['climate_control','Climate control'],['gated_access','Gated access'],['access_24_7','24/7 access'],['surveillance','Video surveillance'],['drive_up','Drive-up units'],['elevator','Elevator access'],['ground_floor','Ground-floor units'],['occupancy','Occupancy / availability (if stated)'],['year_built','Year built / renovated (if stated)'],['promotions','Current promotions'],['other_rates','Other unit rates found'],['operator_type','Operator type']];
+var NA='Not available';
+
+function cite(c,field,source,url){ c.cites=c.cites||{}; c.cites[field]={source:source,url:url||c.web||'',date:today()}; }
+
+function goCollect(){
+  var sel=state.competitors.filter(function(c){return c.include});
+  if(!sel.length){alert('Select at least one competitor in step 2.');return;}
+  maxPhase=Math.max(maxPhase,4); show(4);
+  var wrap=document.getElementById('compCards'); wrap.innerHTML='';
+  state.selected=sel;
+  var lastSubject=null;
+  sel.forEach(function(c,idx){
+    c.data=c.data||{}; c.pasted=c.pasted||false; c.cites=c.cites||{};
+    FIELDS.forEach(function(f){if(!(f[0]in c.data))c.data[f[0]]=NA});
+    if(c.subject!==lastSubject){
+      lastSubject=c.subject;
+      wrap.insertAdjacentHTML('beforeend','<div class="addr-block"><h3>Property: '+esc(c.subject)+'</h3></div>');
+    }
+    var link=c.web?'<a href="'+esc(c.web)+'" target="_blank" rel="noopener">'+esc(c.web)+'</a>':'<a href="https://www.google.com/search?q='+encodeURIComponent(c.name+' '+c.addr)+'" target="_blank" rel="noopener">find website</a>';
+    var fields=FIELDS.map(function(f){return '<div class="field"><div class="k">'+f[1]+'</div><input value="'+esc(c.data[f[0]])+'" onchange="setField('+idx+',\''+f[0]+'\',this.value)"><div class="src" id="src'+idx+'_'+f[0]+'">'+((c.cites[f[0]]||{}).source||'')+'</div></div>'}).join('');
+    wrap.insertAdjacentHTML('beforeend',
+      '<div class="comp-card"><div class="comp-head"><h3>'+(idx+1)+'. '+esc(c.name)+'</h3><span class="pill '+(c.pasted?'found':'na')+'" id="st'+idx+'">'+(c.pasted?'data extracted':'awaiting paste')+'</span></div>'+
+      '<div class="dist">'+esc(c.addr||'')+(c.dist?' · '+c.dist.toFixed(1)+' km':'')+(c.rating?' · '+c.rating+'★':'')+' · found via '+esc(c.discovered)+' · '+link+'</div>'+
+      '<div class="steps"><b>1.</b> Open the website link &nbsp;&nbsp;<b>2.</b> On their page press <b>Ctrl+A</b> then <b>Ctrl+C</b> &nbsp;&nbsp;<b>3.</b> Paste below — also paste their rates page if separate; multiple pastes accumulate</div>'+
+      '<textarea rows="3" class="mono" id="cta'+idx+'" placeholder="Paste website text here…" onpaste="handlePaste(event,'+idx+')"></textarea>'+
+      '<label class="btn ghost sm" style="margin-top:6px">Or upload a screenshot of their rates page<input type="file" accept="image/*" style="display:none" onchange="ocrComp(this,'+idx+')"></label><div class="ok" id="compst'+idx+'" style="display:none"></div>'+
+      '<div class="btn-row" style="margin-top:8px"><label class="btn ghost sm" style="margin:0">Or add a screenshot (OCR)<input type="file" accept="image/*" style="display:none" onchange="ocrFile(this,\'comp\','+idx+',null)"></label><span class="progress" id="ocrc'+idx+'"></span></div>'+
+      '<div class="grid2">'+fields+'</div></div>');
+  });
+  updateProgress();
+}
+function setField(i,k,v){
+  var c=state.selected[i];
+  c.data[k]=v.trim()||NA;
+  cite(c,k,'Manual entry by user','');
+  var el=document.getElementById('src'+i+'_'+k); if(el)el.textContent='Manual entry by user';
+}
+function updateProgress(){
+  var done=state.selected.filter(function(c){return c.pasted}).length;
+  document.getElementById('collectProgress').textContent=done+' of '+state.selected.length+' competitors processed';
+}
+
+function handlePaste(ev,idx){
+  var img=grabPastedImage(ev);
+  if(img){
+    ev.preventDefault();
+    var stEl=ev.target.parentNode.querySelector('.ocrstat');
+    runOCR(img,stEl).then(function(txt){ ev.target.value+=(ev.target.value?'\n':'')+txt; processCompPaste(idx,ev.target.value); });
+    return;
+  }
+  var ta=ev.target;
+  setTimeout(function(){ if(ta.value.length>=40)processCompPaste(idx,ta.value); },50);
+}
+function ocrCompFile(inp,idx){
+  var f=inp.files[0]; if(!f)return;
+  var stEl=inp.parentNode.parentNode.querySelector('.ocrstat');
+  runOCR(f,stEl).then(function(txt){
+    var ta=inp.closest('.comp-card').querySelector('textarea');
+    ta.value+=(ta.value?'\n':'')+txt;
+    processCompPaste(idx,ta.value);
+  }).catch(function(e){ if(stEl)stEl.textContent='OCR failed: '+e.message; });
+}
+function processCompPaste(idx,txt){
+  var c=state.selected[idx];
+  c.pasteText=txt.slice(0,6000);
+  extract(txt,c);
+  c.pasted=true;
+  var cards=document.querySelectorAll('#compCards .comp-card');
+  var card=cards[idx];
+  var inputs=card.querySelectorAll('.field input');
+  FIELDS.forEach(function(f,j){
+    inputs[j].value=c.data[f[0]];
+    var el=document.getElementById('src'+idx+'_'+f[0]);
+    if(el&&c.cites[f[0]])el.textContent=c.cites[f[0]].source;
+  });
+  var st=document.getElementById('st'+idx); st.textContent='data extracted'; st.className='pill found';
+  updateProgress();
+}
+
+function extract(txt,c){
+  var d=c.data, low=txt.toLowerCase(), lines=txt.split(/\n+/);
+  var WEB='Competitor website (pasted by user)';
+  c.raw=((c.raw||'')+'\n'+txt).slice(-9000);
+  var sizes={
+    rate_5x5:[[/5\s*['\u2019\u2032ft]*\s*[x\u00d7]\s*5(?!\d)/i,/\b25\s*(?:sq\.?\s?ft|square feet)/i],40,300],
+    rate_5x10:[[/5\s*['\u2019\u2032ft]*\s*[x\u00d7]\s*10(?!\d)/i,/\b50\s*(?:sq\.?\s?ft|square feet)/i],50,450],
+    rate_10x10:[[/10\s*['\u2019\u2032ft]*\s*[x\u00d7]\s*10(?!\d)/i,/\b100\s*(?:sq\.?\s?ft|square feet)/i],80,700],
+    rate_10x15:[[/10\s*['\u2019\u2032ft]*\s*[x\u00d7]\s*15(?!\d)/i,/\b150\s*(?:sq\.?\s?ft|square feet)/i],100,900],
+    rate_10x20:[[/10\s*['\u2019\u2032ft]*\s*[x\u00d7]\s*20(?!\d)/i,/\b200\s*(?:sq\.?\s?ft|square feet)/i],120,1200]
+  };
+  lines.forEach(function(line){
+    var pm=line.match(/(?:C?\$|CAD\s?)\s?(\d{2,4}(?:\.\d{2})?)(?:\s?(?:\/|per\s)?\s?(?:mo|month))?/i);
+    if(!pm)return;
+    var price=parseFloat(pm[1]);
+    for(var k in sizes){
+      var pats=sizes[k][0];
+      if((pats[0].test(line)||pats[1].test(line))&&price>=sizes[k][1]&&price<=sizes[k][2]&&d[k]===NA){d[k]='$'+price.toFixed(2);cite(c,k,WEB);}
+    }
+  });
+  function flag(key,yes){if((d[key]===NA||d[key]==='Not found on page')&&yes){d[key]='Yes';cite(c,key,WEB);}}
+  flag('climate_control',/climate[\s-]?control|temperature[\s-]?control|heated (?:unit|storage)|climatis|air[\s-]?condition/i.test(txt));
+  flag('gated_access',/gated|fenced and gated|keypad (?:entry|access)|electronic gate|fob access/i.test(txt));
+  flag('access_24_7',/24\s?\/\s?7|24[\s-]hour|24hr|twenty-four hour|around the clock/i.test(txt));
+  flag('surveillance',/surveillance|security camera|video monitor|cctv|video record|camera monitor/i.test(txt));
+  flag('drive_up',/drive[\s-]?up|drive[\s-]?in unit|outdoor access unit/i.test(txt));
+  flag('elevator',/elevator|\blift\b|freight lift/i.test(txt));
+  flag('ground_floor',/ground[\s-]?floor|ground[\s-]?level|main floor|first floor unit/i.test(txt));
+  if(d.promotions===NA){
+    var pr=txt.match(/((?:first|1st)\s+month[^.\n]{0,50}(?:free|off|\$1)|\d{1,2}\s?%\s?off[^.\n]{0,40}|free\s+(?:month|truck|lock)[^.\n]{0,40}|limited[\s-]time[^.\n]{0,50})/i);
+    if(pr){d.promotions=pr[0].trim().slice(0,110);cite(c,'promotions',WEB);}
+  }
+  if(d.operator_type===NA){
+    var hay=(c.web||'').toLowerCase()+' '+low.slice(0,2500)+' '+c.name.toLowerCase();
+    d.operator_type=OPERATORS.some(function(s){return hay.indexOf(s)>-1})?'Institutional / chain':'Independent / unverified';
+    cite(c,'operator_type','Inferred from operator name/domain');
+  }
+  FIELDS.forEach(function(f){
+    if(['climate_control','gated_access','access_24_7','surveillance','drive_up','elevator','ground_floor'].indexOf(f[0])>-1&&d[f[0]]===NA){d[f[0]]='Not found on page';cite(c,f[0],WEB);}
+  });
+}
+
+/* ===== NARRATIVES ===== */
+function citeTag(ct){return ct?' ['+ct.source+(ct.url?', '+ct.url:'')+', '+ct.date+']':''}
+function compassDirection(g,lat,lon){
+  var dx=(+lon-g.lon)*Math.cos(g.lat*Math.PI/180),dy=+lat-g.lat;
+  if(Math.abs(dx)<1e-8&&Math.abs(dy)<1e-8)return 'at the subject';
+  var angle=(Math.atan2(dx,dy)*180/Math.PI+360)%360;
+  return ['north','northeast','east','southeast','south','southwest','west','northwest'][Math.round(angle/45)%8];
+}
+function facilityRoad(addr){return String(addr||'').split(',')[0].replace(/^\s*\d+[A-Za-z-]*\s+/,'').trim()}
+function facilityClusters(stops,threshold){
+  var used={},groups=[];
+  for(var i=0;i<stops.length;i++){
+    if(used[i])continue;
+    var queue=[i],group=[];used[i]=true;
+    while(queue.length){
+      var at=queue.shift();group.push(stops[at]);
+      for(var j=0;j<stops.length;j++){
+        if(!used[j]&&haversine(stops[at].lat,stops[at].lon,stops[j].lat,stops[j].lon)<=threshold){used[j]=true;queue.push(j);}
+      }
+    }
+    if(group.length>=2)groups.push(group);
+  }
+  return groups.sort(function(a,b){return b.length-a.length});
+}
+function maxFacilitySeparation(group){
+  var max=0;
+  group.forEach(function(a,i){group.slice(i+1).forEach(function(b){max=Math.max(max,haversine(a.lat,a.lon,b.lat,b.lon))})});
+  return max;
+}
+function dominantRoad(group){
+  var counts={};group.forEach(function(c){var r=facilityRoad(c.addr);if(r)counts[r]=(counts[r]||0)+1});
+  var roads=Object.keys(counts).sort(function(a,b){return counts[b]-counts[a]});
+  return roads.length&&counts[roads[0]]>=2?roads[0]:'';
+}
+function humanPlaceType(type){return String(type||'place').replace(/_/g,' ')}
+function spatialOverviewSections(g){
+  var pool=(state.selected||state.competitors).filter(function(c){return c.include!==false&&c.subject===g.address&&c.lat!=null&&c.lon!=null});
+  var stops=getMapStops(g,true,9999),within1=0,oneTo3=0,beyond3=0,coLocated=0;
+  stops.forEach(function(c){if(isCoLocated(g,c))coLocated++;else if(c.dist<=1)within1++;else if(c.dist<=3)oneTo3++;else beyond3++;});
+  var geoSrc=' ['+(GKEY?'Google Geocoding/Places':'OpenStreetMap')+', '+today()+']';
+  var where='The subject property at '+g.address+' is located in '+(g.neighborhood?g.neighborhood+', ':'')+(g.municipality||'the local municipality')+(g.province?', '+g.province:'')+', at coordinates '+g.lat.toFixed(4)+', '+g.lon.toFixed(4)+geoSrc+'.';
+  var dirs={};stops.forEach(function(c){if(!isCoLocated(g,c)){var d=compassDirection(g,c.lat,c.lon);dirs[d]=(dirs[d]||0)+1}});
+  var topDirs=Object.keys(dirs).sort(function(a,b){return dirs[b]-dirs[a]}).slice(0,2);
+  var density='Within the '+state.radius+' km search radius, '+pool.length+' mapped listing'+(pool.length===1?' was':'s were')+' identified, representing '+stops.length+' distinct mapped location'+(stops.length===1?'':'s')+' after consolidating duplicate coordinates and addresses. '+coLocated+' '+(coLocated===1?'location is':'locations are')+' co-located with the subject; '+within1+' '+(within1===1?'is':'are')+' within 1 km; '+oneTo3+' '+(oneTo3===1?'is':'are')+' between 1 and 3 km; and '+beyond3+' '+(beyond3===1?'is':'are')+' beyond 3 km.';
+  if(topDirs.length)density+=' Relative to the subject, the largest directional count'+(topDirs.length>1?'s are':' is')+' '+topDirs.map(function(d){return dirs[d]+' to the '+d}).join(' and ')+'.';
+  var threshold=Math.min(1.25,Math.max(.75,state.radius/4)),clusters=facilityClusters(stops,threshold),clustered=[];
+  clusters.forEach(function(group){group.forEach(function(c){if(clustered.indexOf(c)<0)clustered.push(c)})});
+  var clusterText='';
+  if(clusters.length){
+    clusterText=clusters.map(function(group,idx){
+      var lat=group.reduce(function(s,c){return s+c.lat},0)/group.length,lon=group.reduce(function(s,c){return s+c.lon},0)/group.length;
+      var centerDist=haversine(g.lat,g.lon,lat,lon),road=dominantRoad(group),names=group.slice(0,6).map(function(c){return c.name}).join(', ')+(group.length>6?', plus '+(group.length-6)+' more':'');
+      return (idx===0?'A':'Another')+' concentration of '+group.length+' distinct mapped locations lies '+compassDirection(g,lat,lon)+' of the subject, centered approximately '+centerDist.toFixed(1)+' km away'+(road?' around '+road:'')+'. It includes '+names+'. The greatest straight-line separation within this group is '+maxFacilitySeparation(group).toFixed(1)+' km.';
+    }).join(' ');
+    var unclustered=stops.length-clustered.length;
+    if(unclustered>0)clusterText+=' The remaining '+unclustered+' mapped location'+(unclustered===1?' does':'s do')+' not fall within '+threshold.toFixed(2)+' km of another mapped group.';
+  }else clusterText='No group of two or more distinct mapped locations falls within '+threshold.toFixed(2)+' km of one another. On that measured basis, the facilities are distributed rather than forming a tight mapped cluster.';
+  var places=(g.contextPlaces||[]).slice(0,10),placeText='';
+  if(places.length){
+    placeText='Named places identified within approximately 2.5 km include '+places.map(function(p){return p.name+' ('+humanPlaceType(p.type)+', '+p.dist.toFixed(1)+' km '+compassDirection(g,p.lat,p.lon)+')'}).join('; ')+'. These are included only as geographic landmarks visible around the subject; no interpretation is assigned [Google Places, '+today()+'].';
+  }else placeText='No surrounding named-place landmarks were collected'+(GKEY?' from Google Places':' because the Google Places search was not run')+'.';
+  return [
+    {title:'Property and map orientation',text:where},
+    {title:'Competitive density and spatial distribution',text:density},
+    {title:'Observed clusters and corridors',text:clusterText},
+    {title:'Surrounding named places',text:placeText}
+  ];
+}
+function additionalLocationContext(g){
+  var lo=g.loc||{}, lc=g.lcites||{}, P=[];
+  var demo=[];
+  if(lo.population!=='Not available')demo.push('the surrounding area recorded a population of '+lo.population+citeTag(lc.population));
+  if(lo.pop_growth!=='Not available')demo.push('population change of '+lo.pop_growth+citeTag(lc.pop_growth));
+  if(lo.households!=='Not available')demo.push(lo.households+' total households'+citeTag(lc.households));
+  if(lo.avg_hh!=='Not available')demo.push('an average household size of '+lo.avg_hh+citeTag(lc.avg_hh));
+  if(lo.renter_pct!=='Not available')demo.push('renter-occupied share of '+lo.renter_pct+citeTag(lc.renter_pct));
+  if(lo.median_income!=='Not available')demo.push('median household income of '+lo.median_income+citeTag(lc.median_income));
+  if(lo.age_20_34!=='Not available')demo.push(lo.age_20_34+' of residents aged 20\u201334'+citeTag(lc.age_20_34));
+  if(lo.age_35_49!=='Not available')demo.push(lo.age_35_49+' aged 35\u201349'+citeTag(lc.age_35_49));
+  P.push(demo.length?('On demographics, '+demo.join('; ')+'. These figures are reproduced exactly as extracted from the cited sources; interpretation of demand implications is left to the analyst.'):'Demographics: no data was sourced during this collection \u2014 all demographic fields are marked Not available.');
+  var hou=[];
+  if(lo.dwellings!=='Not available')hou.push('total dwelling stock of '+lo.dwellings+citeTag(lc.dwellings));
+  if(lo.pipeline_units!=='Not available')hou.push(lo.pipeline_units+' units in the reported development pipeline'+citeTag(lc.pipeline_units));
+  if(lo.notable_projects!=='Not available')hou.push('notable projects reported: '+lo.notable_projects+citeTag(lc.notable_projects));
+  P.push(hou.length?('On housing and development, the sourced material indicates '+hou.join('; ')+'.'):'Housing & development pipeline: no data was sourced during this collection.');
+  var emp=[];
+  if(lo.employment!=='Not available')emp.push('employment in the area reported at '+lo.employment+citeTag(lc.employment));
+  if(lo.major_employers!=='Not available')emp.push('major employers reported: '+lo.major_employers+citeTag(lc.major_employers));
+  if(lo.office_vacancy!=='Not available')emp.push('office vacancy of '+lo.office_vacancy+citeTag(lc.office_vacancy));
+  P.push(emp.length?('On the economic base, '+emp.join('; ')+'.'):'Economic & employment context: no data was sourced during this collection.');
+  var trS=(g.transit&&g.transit.length)?('Transit access: '+g.transit.length+' station(s)/stop(s) were identified within 1.2 km \u2014 '+g.transit.map(function(t){return t.name+' ('+(t.dist*1000).toFixed(0)+' m)'}).join('; ')+' [Google Places, '+today()+'].'):'Transit access: no stations were identified within 1.2 km'+(GKEY?' [Google Places, '+today()+']':' (not searched \u2014 no Google key)')+'.';
+  P.push(trS);
+  return P;
+}
+function locNarrative(g){return spatialOverviewSections(g).map(function(s){return s.title+': '+s.text}).concat(additionalLocationContext(g))}
+function compNarrative(c){
+  var d=c.data||{}, P=[];
+  var idS=c.name+' is located at '+(c.addr||'an unconfirmed address')+(c.dist?', approximately '+c.dist.toFixed(1)+' km from the subject':'')+(c.rating?', with a Google rating of '+c.rating+' across '+c.ratings+' reviews':'')+' ['+c.discovered+', '+today()+'].';
+  P.push(idS);
+  var rates=[];
+  [['rate_5x5','5\u00d75'],['rate_5x10','5\u00d710'],['rate_10x10','10\u00d710'],['rate_10x15','10\u00d715'],['rate_10x20','10\u00d720']].forEach(function(r){
+    if(d[r[0]]&&d[r[0]]!==NA)rates.push(r[1]+' at '+d[r[0]]+'/month'+citeTag((c.cites||{})[r[0]]));
+  });
+  P.push(rates.length?('Advertised rates collected: '+rates.join('; ')+'. Rates are as displayed online on the collection date and may reflect promotional pricing.'):'No advertised rates were found in the collected material \u2014 direct inquiry may be required.');
+  var feats=[];
+  [['climate_control','climate control'],['gated_access','gated access'],['access_24_7','24/7 access'],['surveillance','video surveillance'],['drive_up','drive-up units'],['elevator','elevator access'],['ground_floor','ground-floor units']].forEach(function(f){
+    if(d[f[0]]==='Yes')feats.push(f[1]);
+  });
+  var notFound=[['climate_control','climate control'],['gated_access','gated access'],['access_24_7','24/7 access'],['surveillance','video surveillance'],['drive_up','drive-up units'],['elevator','elevator access'],['ground_floor','ground-floor units']].filter(function(f){return d[f[0]]==='Not found on page'}).map(function(f){return f[1]});
+  var fs='';
+  if(feats.length)fs+='Confirmed features from the collected material: '+feats.join(', ')+' [Competitor website, '+today()+'].';
+  if(notFound.length)fs+=(fs?' ':'')+'Not mentioned on the collected pages (absence not confirmed): '+notFound.join(', ')+'.';
+  if(fs)P.push(fs);
+  if(d.promotions&&d.promotions!==NA)P.push('Current promotion observed: "'+d.promotions+'"'+citeTag((c.cites||{}).promotions)+'.');
+  P.push('Operator type: '+(d.operator_type||NA)+citeTag((c.cites||{}).operator_type)+'.'+(c.web?' Website: '+c.web:''));
+  if(!c.pasted)P=[idS,'No website content was collected for this competitor \u2014 all data fields are placeholders pending collection.'];
+  return P;
+}
+
+/* ===== PRINTABLE REPORT ===== */
+function mercatorPoint(lat,lng){
+  var sin=Math.sin(Math.max(-85,Math.min(85,+lat))*Math.PI/180);
+  return {x:(+lng+180)/360,y:.5-Math.log((1+sin)/(1-sin))/(4*Math.PI)};
+}
+function computeStaticViewport(g,stops){
+  var coords=(g.routePath&&g.routePath.length?g.routePath:[]).concat([{lat:g.lat,lng:g.lon}]).concat(stops.map(function(c,i){return mapDisplayPosition(g,c,i)}));
+  var pts=coords.map(function(p){return mercatorPoint(p.lat,p.lng)});
+  var minX=Math.min.apply(null,pts.map(function(p){return p.x})),maxX=Math.max.apply(null,pts.map(function(p){return p.x}));
+  var minY=Math.min.apply(null,pts.map(function(p){return p.y})),maxY=Math.max.apply(null,pts.map(function(p){return p.y}));
+  var cx=(minX+maxX)/2,cy=(minY+maxY)/2,spanX=Math.max(maxX-minX,1e-9),spanY=Math.max(maxY-minY,1e-9);
+  var zoom=Math.floor(Math.min(Math.log2((640-130)/(256*spanX)),Math.log2((400-110)/(256*spanY))));
+  zoom=Math.max(3,Math.min(15,isFinite(zoom)?zoom:14));
+  var lat=Math.atan(Math.sinh(Math.PI*(1-2*cy)))*180/Math.PI;
+  return {cx:cx,cy:cy,lat:lat,lng:cx*360-180,zoom:zoom,width:640,height:400};
+}
+function staticPixel(view,lat,lng){
+  var p=mercatorPoint(lat,lng),world=256*Math.pow(2,view.zoom);
+  return {x:(p.x-view.cx)*world+view.width/2,y:(p.y-view.cy)*world+view.height/2};
+}
+function printableCallouts(g,stops){
+  var view=g.staticViewport;if(!view)return '';
+  var offsets=[-18,16,-28,28,0,12];
+  return stops.slice(0,6).map(function(c,i){
+    var display=mapDisplayPosition(g,c,i),p=staticPixel(view,display.lat,display.lng),left=p.x>view.width*.56;
+    var x=Math.max(28,Math.min(view.width-28,p.x)),y=Math.max(22,Math.min(view.height-22,p.y+offsets[i%offsets.length]));
+    return '<div class="map-print-callout'+(left?' left':'')+'" style="left:'+(x/view.width*100).toFixed(2)+'%;top:'+(y/view.height*100).toFixed(2)+'%"><b>'+mapLabel(i+1)+' · '+esc(c.name)+'</b><span>'+(isCoLocated(g,c)?'Co-located with subject':esc(c.addr||'Address not available'))+'</span></div>';
+  }).join('');
+}
+function mapFigureHtml(g,imgClass){
+  var mu=staticMapUrl(g); if(!mu)return '';
+  var stops=(g.routeStops&&g.routeStops.length)?g.routeStops:getMapStops(g,true);
+  var selectedPool=(state.selected||state.competitors).filter(function(c){return c.include!==false&&c.subject===g.address&&c.lat!=null&&c.lon!=null});
+  var allStops=getMapStops(g,true,9999),omitted=Math.max(0,allStops.length-stops.length),coLocated=allStops.filter(function(c){return isCoLocated(g,c)}).length;
+  var hasPrintedRoute=!!(g.routePolyline&&!g.staticRouteOmitted);
+  var key='<div class="map-key"><div class="map-key-item subject"><span class="map-badge">A</span><span><b>Subject property</b><small>'+esc(g.address)+'</small></span></div>';
+  stops.forEach(function(c,i){
+    var detail=isCoLocated(g,c)?'Co-located with subject':esc(c.addr||'Address not available')+(c.dist?' · '+c.dist.toFixed(1)+' km':'');
+    if(c.mapListingCount>1)detail+=' · '+c.mapListingCount+' listings consolidated';
+    key+='<div class="map-key-item"><span class="map-badge">'+mapLabel(i+1)+'</span><span><b>'+esc(c.name)+'</b><small>'+detail+'</small></span></div>';
+  });
+  key+='</div>';
+  var facts='<div class="map-facts"><b>Map coverage:</b> '+selectedPool.length+' selected mapped listing'+(selectedPool.length===1?'':'s')+' · '+allStops.length+' distinct mapped location'+(allStops.length===1?'':'s')+' after consolidating duplicate coordinates/addresses'+(coLocated?' · '+coLocated+' co-located with the subject':'')+'</div>';
+  var omittedNote=omitted?'<div class="map-omitted">'+omitted+' additional selected competitor'+(omitted===1?' is':'s are')+' listed in the report tables but omitted from this map for legibility.</div>':'';
+  return '<div class="map-figure"><div class="map-canvas-wrap"><img class="'+(imgClass||'mapimg')+'" src="'+mu+'" alt="Lettered competitor route map">'+printableCallouts(g,stops)+'</div>'+facts+'<div class="map-route-summary'+(hasPrintedRoute?'':' no-route')+'">'+esc(routeSummary(g))+'</div>'+key+omittedNote+'<div class="rp-cap">A = subject · B onward = up to '+MAX_MAP_COMPETITORS+' closest distinct mapped locations'+(hasPrintedRoute?' · blue = optimized driving route':'')+' · Source: Google Maps, '+today()+'.</div></div>';
+}
+function buildReport(){
+  var sel=state.selected||[];
+  var H=[];
+  H.push('<div class="rp-cover"><div class="rp-kicker">MARKET RESEARCH PACKAGE \u2014 RAW DATA COLLECTION</div><h1>'+esc(state.assetClass)+' Competitor &amp; Location Research</h1>');
+  H.push('<p class="rp-meta">Subject propert'+(state.geocoded.length===1?'y':'ies')+': '+esc(state.addresses.join(' \u00b7 '))+'<br>Search radius: '+state.radius+' km \u00b7 Generated: '+today()+' \u00b7 Tool: Market Research Companion v3 (stateless, browser-based)</p>');
+  H.push('<p class="rp-note">This package contains raw collected data with per-value citations. It applies no comparability judgment, filtering, or analysis \u2014 synthesis belongs to the receiving analyst or internal AI system. Values that could not be confirmed are explicitly marked Not available.</p></div>');
+  state.geocoded.forEach(function(g,gi){
+    H.push('<div class="rp-prop"><h2>Property '+(gi+1)+': '+esc(g.address)+'</h2>');
+    var mapFigure=mapFigureHtml(g,'rp-map');
+    if(mapFigure)H.push(mapFigure);
+    H.push('<h3>Location overview</h3>');
+    spatialOverviewSections(g).forEach(function(s){H.push('<h4>'+esc(s.title)+'</h4><p>'+esc(s.text)+'</p>')});
+    H.push('<h4>Additional sourced data (separate from the map description)</h4>');
+    additionalLocationContext(g).forEach(function(p){H.push('<p>'+esc(p)+'</p>')});
+    H.push('<h3>Competitors</h3>');
+    var mine=sel.filter(function(c){return c.subject===g.address});
+    if(!mine.length)H.push('<p class="rp-note">No competitors selected for this property.</p>');
+    mine.forEach(function(c,ci){
+      H.push('<div class="rp-comp"><h4>'+(ci+1)+'. '+esc(c.name)+(c.web?' \u2014 <a href="'+esc(c.web)+'">'+esc(c.web)+'</a>':'')+'</h4>');
+      compNarrative(c).forEach(function(p){H.push('<p>'+esc(p).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1">$1</a>')+'</p>')});
+      H.push('</div>');
+    });
+    H.push('</div>');
+  });
+  H.push('<div class="rp-appendix"><h2>Appendix A \u2014 Fact-check citation sheet</h2><p class="rp-note">Every populated value, its source, link and collection date. Verification of any figure should take minutes using this sheet.</p>');
+  H.push('<table><tr><th>Scope</th><th>Subject</th><th>Field</th><th>Value</th><th>Source</th><th>Date</th></tr>');
+  state.geocoded.forEach(function(g){
+    H.push('<tr><td>Location</td><td>'+esc(g.address)+'</td><td>Geographic context</td><td>'+esc((g.neighborhood||'')+' / '+(g.municipality||''))+'</td><td>'+(GKEY?'Google Geocoding':'OpenStreetMap')+'</td><td>'+today()+'</td></tr>');
+    LFIELDS.forEach(function(f){
+      var v=(g.loc||{})[f[0]]; if(!v||v==='Not available')return;
+      var ct=(g.lcites||{})[f[0]]||{source:'',url:'',date:today()};
+      H.push('<tr><td>Location</td><td>'+esc(g.address)+'</td><td>'+esc(f[1])+'</td><td>'+esc(v)+'</td><td>'+esc(ct.source)+(ct.url?'<br><a href="'+esc(ct.url)+'">'+esc(ct.url)+'</a>':'')+'</td><td>'+ct.date+'</td></tr>');
+    });
+  });
+  sel.forEach(function(c){
+    H.push('<tr><td>Competitor</td><td>'+esc(c.name)+'</td><td>Identification</td><td>'+esc(c.addr)+'</td><td>'+esc(c.discovered)+(c.web?'<br><a href="'+esc(c.web)+'">'+esc(c.web)+'</a>':'')+'</td><td>'+today()+'</td></tr>');
+    FIELDS.forEach(function(f){
+      var v=c.data?c.data[f[0]]:NA; if(!v||v===NA)return;
+      var ct=(c.cites||{})[f[0]]||{source:'',url:'',date:today()};
+      H.push('<tr><td>Competitor</td><td>'+esc(c.name)+'</td><td>'+esc(f[1])+'</td><td>'+esc(v)+'</td><td>'+esc(ct.source)+(ct.url?'<br><a href="'+esc(ct.url)+'">'+esc(ct.url)+'</a>':'')+'</td><td>'+ct.date+'</td></tr>');
+    });
+  });
+  H.push('</table></div>');
+  H.push('<div class="rp-appendix"><h2>Appendix B \u2014 Source excerpts (verbatim)</h2><p class="rp-note">Full text of the material pasted or OCR-extracted during collection, preserved so the receiving analyst/system can capture anything the automated extraction missed. Excerpts are truncated to the most recent ~9,000 characters per source.</p>');
+  state.geocoded.forEach(function(g){
+    var rl=g.rawloc||{};
+    ['census','housing','employment'].forEach(function(k){
+      if(rl[k])H.push('<h4>'+esc(g.address)+' \u2014 '+(k==='census'?'Demographics source':k==='housing'?'Housing/development source':'Employment source')+'</h4><pre>'+esc(rl[k].trim())+'</pre>');
+    });
+  });
+  sel.forEach(function(c){ if(c.raw)H.push('<h4>'+esc(c.name)+' \u2014 website content</h4><pre>'+esc(c.raw.trim())+'</pre>'); });
+  H.push('</div>');
+  document.getElementById('report').innerHTML=H.join('');
+}
+/* ===== PACKAGE ===== *//* ===== PACKAGE ===== */
+function buildPackage(){
+  var sel=state.selected||[];
+  var L=[];
+  L.push('COMPETITOR & LOCATION MARKET RESEARCH PACKAGE');
+  L.push('Generated: '+today()+'  ·  Tool: Market Research Companion v3 (browser-based, stateless)');
+  L.push('');
+  L.push('== REQUEST ==');
+  L.push('Asset class: '+state.assetClass);
+  L.push('Subject location(s): '+state.addresses.join(' | '));
+  L.push('Search radius: '+state.radius+' km');
+  if(state.criteria)L.push('Criteria specified in brief:\n'+state.criteria);
+  L.push('');
+  L.push('== METHODOLOGY & SOURCES ==');
+  L.push('- Competitor identification & geographic context: '+state.source+' ('+today()+').');
+  L.push('- Location overview data (demographics, housing pipeline, employment): official public sources pasted by the user and extracted by keyword; each value carries a citation. Values not found remain "Not available". Nothing is estimated.');
+  L.push('- Facility data: public competitor websites via human-guided browsing on '+today()+'. Rates are advertised online rates and may be promotional.');
+  L.push('- This package contains RAW DATA ONLY. No comparability filtering, scoring, or analysis has been applied — synthesis is left to the receiving analyst/system.');
+  L.push('');
+  state.geocoded.forEach(function(g,gi){
+    var supply=state.competitors.filter(function(c){return c.subject===g.address}).length;
+    L.push('==================================================');
+    L.push('PROPERTY '+(gi+1)+': '+g.address.toUpperCase());
+    L.push('==================================================');
+    L.push('');
+    L.push('-- LOCATION OVERVIEW --');
+    L.push('Geographic context ['+(GKEY?'Google Geocoding':'OpenStreetMap')+', '+today()+']:');
+    L.push('  Neighborhood: '+(g.neighborhood||'Not available')+'   Municipality: '+(g.municipality||'Not available')+'   Province: '+(g.province||'Not available'));
+    L.push('  Coordinates: '+g.lat.toFixed(4)+', '+g.lon.toFixed(4));
+    L.push('Supply density [derived from discovery, '+today()+']: '+supply+' '+state.assetClass.toLowerCase()+' facilities within '+state.radius+' km.');
+    L.push('Transit ['+(GKEY?'Google Places, ':'')+today()+']: '+((g.transit&&g.transit.length)?g.transit.map(function(t){return t.name+' ('+(t.dist*1000).toFixed(0)+' m)'}).join('; '):'No stations found within 1.2 km'+(GKEY?'':' (no Google key — not searched)')));
+    var lc=g.lcites||{}, lo=g.loc||{};
+    LFIELDS.forEach(function(f){
+      var v=lo[f[0]]||'Not available';
+      var ct=lc[f[0]];
+      L.push(f[1]+': '+v+(ct?('   ['+ct.source+(ct.url?' · '+ct.url:'')+' · '+ct.date+']'):''));
+    });
+    L.push('');
+    L.push('-- LOCATION OVERVIEW NARRATIVE --');
+    locNarrative(g).forEach(function(p){L.push(p);L.push('');});
+    L.push('-- COMPETITOR DATA --');
+    var mine=sel.filter(function(c){return c.subject===g.address});
+    if(!mine.length)L.push('(no competitors selected for this property)');
+    mine.forEach(function(c,i){
+      L.push('');
+      L.push((i+1)+'. '+c.name.toUpperCase()+(c.manual?'  [added manually]':''));
+      L.push('   Distance: '+(c.dist?c.dist.toFixed(1)+' km':'n/a')+(c.rating?'   Google rating: '+c.rating+' ('+c.ratings+' reviews)':''));
+      L.push('   Address: '+(c.addr||NA)+'   Website: '+(c.web||NA)+(c.phone?'   Phone: '+c.phone:''));
+      L.push('   Discovered via: '+c.discovered+'   Data status: '+(c.pasted?'website content collected '+today():'NOT COLLECTED — fields below are placeholders'));
+      FIELDS.forEach(function(f){L.push('   '+f[1]+': '+c.data[f[0]])});
+      L.push('   Narrative: '+compNarrative(c));
+    });
+    L.push('');
+    var rw=g.raw||{};
+    if(rw.census||rw.housing||rw.employment){
+      L.push('-- RAW SOURCE EXCERPTS (for analyst verification; nothing extracted above is outside these sources) --');
+      if(rw.census){L.push('[Census/demographics paste, '+today()+']');L.push(rw.census.slice(-3500).trim());L.push('');}
+      if(rw.housing){L.push('[Housing/development paste, '+today()+']');L.push(rw.housing.slice(-3000).trim());L.push('');}
+      if(rw.employment){L.push('[Employment/economic paste, '+today()+']');L.push(rw.employment.slice(-3000).trim());L.push('');}
+    }
+  });
+  L.push('== FACT-CHECK CITATIONS (competitor data) ==');
+  sel.forEach(function(c){
+    L.push('');
+    L.push(c.name+' ['+c.subject+']:');
+    L.push('  Identification: '+c.discovered+' | '+(c.web||'n/a')+' | '+today());
+    FIELDS.forEach(function(f){
+      var v=c.data[f[0]];
+      if(v===NA)return;
+      var ct=(c.cites||{})[f[0]]||{source:'—',url:'',date:today()};
+      L.push('  '+f[1]+': '+v+' | '+ct.source+' | '+(ct.url||'n/a')+' | '+ct.date);
+    });
+  });
+  L.push('');
+  L.push('== DATA GAPS ==');
+  var gaps=[];
+  state.geocoded.forEach(function(g){
+    var missingL=LFIELDS.filter(function(f){return (g.loc||{})[f[0]]==='Not available'}).length;
+    if(missingL)gaps.push('- '+g.address+' location overview: '+missingL+' field(s) not sourced — see Not available markers.');
+  });
+  sel.forEach(function(c){
+    var missing=FIELDS.filter(function(f){return c.data[f[0]]===NA||c.data[f[0]]==='Not found on page'}).length;
+    if(!c.pasted)gaps.push('- '+c.name+': no website data collected.');
+    else if(missing>0)gaps.push('- '+c.name+': '+missing+' field(s) not published online — direct call may be required.');
+  });
+  L.push(gaps.length?gaps.join('\n'):'- None.');
+  L.push('');
+  L.push('');
+  L.push('== WRITTEN SUMMARIES (template-generated from collected values; every figure cited) ==');
+  state.geocoded.forEach(function(g,gi){
+    L.push('');
+    L.push('Property '+(gi+1)+' \u2014 '+g.address+':');
+    locNarrative(g).forEach(function(p){L.push(p)});
+    sel.filter(function(c){return c.subject===g.address}).forEach(function(c){
+      L.push('');
+      L.push('\u2022 '+c.name+':');
+      compNarrative(c).forEach(function(p){L.push('  '+p)});
+    });
+  });
+  L.push('');
+  L.push('== SOURCE EXCERPTS (verbatim, for the receiving analyst/AI to capture anything extraction missed) ==');
+  state.geocoded.forEach(function(g){
+    var rl=g.rawloc||{};
+    ['census','housing','employment'].forEach(function(k){
+      if(rl[k]){L.push('');L.push('--- '+g.address+' \u2014 '+k.toUpperCase()+' SOURCE ---');L.push(rl[k].trim().slice(0,6000));}
+    });
+  });
+  sel.forEach(function(c){ if(c.raw){L.push('');L.push('--- '+c.name+' \u2014 WEBSITE CONTENT ---');L.push(c.raw.trim().slice(0,6000));} });
+  L.push('');
+  L.push('Occupancy data is rarely published publicly and is not included; verify by direct inquiry where required.');
+  return L.join('\n');
+}
+
+function goOutput(){
+  maxPhase=Math.max(maxPhase,5); show(5);
+  document.getElementById('output').textContent=buildPackage();
+}
+function copyOut(){
+  navigator.clipboard.writeText(document.getElementById('output').textContent).then(function(){
+    var b=document.getElementById('copyBtn'); b.textContent='Copied'; setTimeout(function(){b.textContent='Copy research package'},1600);
+  });
+}
+function csvEsc(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'}
+function downloadBlob(rows,name){
+  var blob=new Blob([rows.join('\n')],{type:'text/csv'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+}
+function downloadCSV(){
+  var sel=state.selected||[];
+  var head=['subject_address','competitor','address','distance_km','google_rating','website','phone','discovered_via'].concat(FIELDS.map(function(f){return f[0]})).concat(['data_collected','collection_date']);
+  var rows=[head.join(',')];
+  sel.forEach(function(c){
+    rows.push([c.subject,c.name,c.addr,c.dist?c.dist.toFixed(2):'',c.rating||'',c.web,c.phone,c.discovered].concat(FIELDS.map(function(f){return c.data[f[0]]})).concat([c.pasted?'yes':'no',today()]).map(csvEsc).join(','));
+  });
+  downloadBlob(rows,'competitor_research_'+today()+'.csv');
+}
+function downloadCitations(){
+  var sel=state.selected||[];
+  var rows=['scope,subject,field,value,source,source_url,date_collected'];
+  state.geocoded.forEach(function(g){
+    rows.push(['location',g.address,'geographic context (neighborhood/municipality/coords)',(g.neighborhood||'')+' / '+(g.municipality||''),GKEY?'Google Geocoding':'OpenStreetMap','',today()].map(csvEsc).join(','));
+    LFIELDS.forEach(function(f){
+      var v=(g.loc||{})[f[0]]; if(!v||v==='Not available')return;
+      var ct=(g.lcites||{})[f[0]]||{source:'',url:'',date:today()};
+      rows.push(['location',g.address,f[1],v,ct.source,ct.url||'',ct.date].map(csvEsc).join(','));
+    });
+  });
+  sel.forEach(function(c){
+    rows.push(['competitor',c.subject+' — '+c.name,'identification',c.addr,c.discovered,c.web||'',today()].map(csvEsc).join(','));
+    FIELDS.forEach(function(f){
+      var v=c.data?c.data[f[0]]:NA; if(!v||v===NA)return;
+      var ct=(c.cites||{})[f[0]]||{source:'',url:'',date:today()};
+      rows.push(['competitor',c.subject+' — '+c.name,f[1],v,ct.source,ct.url||'',ct.date].map(csvEsc).join(','));
+    });
+  });
+  downloadBlob(rows,'citation_sheet_'+today()+'.csv');
+}
+
+/* ===== PDF REPORT ===== */
+function staticMapUrl(g){
+  if(!GKEY)return '';
+  var stops=(g.routeStops&&g.routeStops.length)?g.routeStops:getMapStops(g,true);
+  var view=computeStaticViewport(g,stops);g.staticViewport=view;
+  var u='https://maps.googleapis.com/maps/api/staticmap?size=640x400&scale=2&maptype=roadmap&center='+view.lat.toFixed(6)+','+view.lng.toFixed(6)+'&zoom='+view.zoom;
+  u+='&style=feature:poi%7Celement:labels%7Cvisibility:off&style=feature:transit%7Celement:labels%7Cvisibility:off';
+  var markers='&markers=size:mid%7Ccolor:0xc0392b%7Clabel:A%7C'+(+g.lat).toFixed(6)+','+(+g.lon).toFixed(6);
+  stops.forEach(function(c,i){
+    var display=mapDisplayPosition(g,c,i);
+    markers+='&markers=size:mid%7Ccolor:0x17212b%7Clabel:'+mapLabel(i+1)+'%7C'+display.lat.toFixed(6)+','+display.lng.toFixed(6);
+  });
+  var routePath=g.routePolyline?'&path=color:0x1769aaff%7Cweight:5%7Cenc:'+encodeURIComponent(g.routePolyline):'';
+  g.staticRouteOmitted=false;
+  if((u+routePath+markers).length<15800)u+=routePath;
+  else g.staticRouteOmitted=!!routePath;
+  u+=markers;
+  u+='&key='+encodeURIComponent(GKEY);
+  return u;
+}
+function esc2(s){return esc(s)}
+function waitForReportMaps(){
+  var imgs=Array.prototype.slice.call(document.querySelectorAll('#reportView .map-figure img'));
+  return Promise.all(imgs.map(function(img){
+    if(img.complete)return Promise.resolve();
+    return new Promise(function(resolve){
+      var done=false,finish=function(){if(done)return;done=true;resolve()};
+      img.addEventListener('load',finish,{once:true});img.addEventListener('error',finish,{once:true});setTimeout(finish,10000);
+    });
+  }));
+}
+async function openReport(){
+  await buildDrivingRoutes(null,true);
+  var sel=(state.selected||state.competitors).filter(function(c){return c.include!==false});
+  var H=[];
+  H.push('<div class="closebar"><button class="btn" id="printReportBtn" disabled onclick="window.print()">Loading map…</button><button class="btn ghost" onclick="closeReport()">Close report view</button><span style="font-size:12px;color:#5b6b79;align-self:center">In the print dialog choose "Save as PDF".</span></div>');
+  H.push('<div class="rv">');
+  H.push('<h1>Competitor &amp; Location Market Research Report</h1>');
+  H.push('<div class="meta">Prepared by Market Research Companion (independent data-collection tool) · Generated '+today()+' · Asset class: '+esc2(state.assetClass)+' · Radius: '+state.radius+' km · Discovery source: '+esc2(state.source)+'</div>');
+  if(state.criteria)H.push('<p><b>Criteria from research brief:</b> '+esc2(state.criteria)+'</p>');
+  H.push('<p><b>Scope &amp; method.</b> This report contains collected and organized public data only: competitor identification from '+esc2(state.source)+', location context from map data and official public sources pasted by the researcher, and facility details from competitor public websites. Every value carries a citation; values not found in any source are marked Not available. No values are estimated, and no comparability judgment or analysis has been applied — synthesis is left to the receiving analyst or internal system.</p>');
+  state.geocoded.forEach(function(g,gi){
+    H.push('<h2>Property '+(gi+1)+': '+esc2(g.address)+'</h2>');
+    var mapFigure=mapFigureHtml(g,'mapimg');
+    if(mapFigure)H.push(mapFigure);
+    H.push('<h3>Location overview</h3>');
+    spatialOverviewSections(g).forEach(function(s){H.push('<h4>'+esc2(s.title)+'</h4><p>'+esc2(s.text)+'</p>')});
+    H.push('<h4>Additional sourced data (separate from the map description)</h4>');
+    additionalLocationContext(g).forEach(function(p){H.push('<p>'+esc2(p)+'</p>')});
+    H.push('<h3>Location data table</h3><table><tr><th>Field</th><th>Value</th><th>Source</th></tr>');
+    LFIELDS.forEach(function(f){
+      var ct=(g.lcites||{})[f[0]];
+      H.push('<tr><td>'+esc2(f[1])+'</td><td>'+esc2((g.loc||{})[f[0]]||'Not available')+'</td><td>'+esc2(ct?(ct.source+' · '+ct.date):'—')+'</td></tr>');
+    });
+    H.push('</table>');
+    H.push('<h3>Competitors</h3>');
+    var mine=sel.filter(function(c){return c.subject===g.address});
+    if(!mine.length)H.push('<p>No competitors selected for this property.</p>');
+    mine.forEach(function(c,i){
+      var mapped=mapStopIndex(g.routeStops||[],c),ref=mapped>=0?mapLabel(mapped+1):String(i+1);
+      H.push('<h3 style="margin-top:14px">'+ref+'. '+esc2(c.name)+(c.web?' — <a href="'+esc2(c.web)+'">'+esc2(c.web)+'</a>':'')+'</h3>');
+      H.push('<p>'+esc2(compNarrative(c))+'</p>');
+      H.push('<table><tr><th>Field</th><th>Value</th></tr>');
+      H.push('<tr><td>Address / distance</td><td>'+esc2(c.addr||'—')+(c.dist?' · '+c.dist.toFixed(1)+' km':'')+'</td></tr>');
+      H.push('<tr><td>Phone / rating</td><td>'+esc2(c.phone||'—')+(c.rating?' · '+c.rating+'★ ('+c.ratings+')':'')+'</td></tr>');
+      FIELDS.forEach(function(f){H.push('<tr><td>'+esc2(f[1])+'</td><td>'+esc2(c.data?c.data[f[0]]:'Not available')+'</td></tr>')});
+      H.push('</table>');
+    });
+  });
+  H.push('<h2>Appendix A — Fact-check citation sheet</h2>');
+  H.push('<table><tr><th>Scope</th><th>Subject</th><th>Field</th><th>Value</th><th>Source</th><th>Link</th><th>Date</th></tr>');
+  state.geocoded.forEach(function(g){
+    LFIELDS.forEach(function(f){
+      var v=(g.loc||{})[f[0]]; if(!v||v==='Not available')return;
+      var ct=(g.lcites||{})[f[0]]||{source:'',url:'',date:today()};
+      H.push('<tr><td>Location</td><td>'+esc2(g.address)+'</td><td>'+esc2(f[1])+'</td><td>'+esc2(v)+'</td><td>'+esc2(ct.source)+'</td><td>'+esc2(ct.url||'—')+'</td><td>'+ct.date+'</td></tr>');
+    });
+  });
+  sel.forEach(function(c){
+    FIELDS.forEach(function(f){
+      var v=c.data?c.data[f[0]]:null; if(!v||v==='Not available')return;
+      var ct=(c.cites||{})[f[0]]||{source:'',url:'',date:today()};
+      H.push('<tr><td>Competitor</td><td>'+esc2(c.name)+'</td><td>'+esc2(f[1])+'</td><td>'+esc2(v)+'</td><td>'+esc2(ct.source)+'</td><td>'+esc2(ct.url||'—')+'</td><td>'+ct.date+'</td></tr>');
+    });
+  });
+  H.push('</table>');
+  var anyRaw=state.geocoded.some(function(g){var r=g.raw||{};return r.census||r.housing||r.employment});
+  if(anyRaw){
+    H.push('<h2>Appendix B — Raw source excerpts</h2>');
+    H.push('<p>Trimmed excerpts of the pasted source material, preserved so the receiving analyst can verify extracted values and recover anything the structured extraction missed.</p>');
+    state.geocoded.forEach(function(g){
+      var r=g.raw||{}; if(!(r.census||r.housing||r.employment))return;
+      H.push('<h3>'+esc2(g.address)+'</h3>');
+      if(r.census)H.push('<p><b>Census / demographics paste:</b></p><div class="rawx">'+esc2(r.census.slice(-3500).trim())+'</div>');
+      if(r.housing)H.push('<p><b>Housing / development paste:</b></p><div class="rawx">'+esc2(r.housing.slice(-3000).trim())+'</div>');
+      if(r.employment)H.push('<p><b>Employment / economic paste:</b></p><div class="rawx">'+esc2(r.employment.slice(-3000).trim())+'</div>');
+    });
+  }
+  H.push('<p class="meta" style="margin-top:24px">End of report. Verify all figures against cited sources before use in final materials. This document contains public market data only.</p>');
+  H.push('</div>');
+  document.getElementById('reportView').innerHTML=H.join('');
+  document.body.classList.add('printing');
+  window.scrollTo(0,0);
+  await waitForReportMaps();
+  var printBtn=document.getElementById('printReportBtn');
+  if(printBtn){printBtn.disabled=false;printBtn.textContent='Print / Save as PDF';}
+}
+function closeReport(){
+  document.body.classList.remove('printing');
+  document.getElementById('reportView').innerHTML='';
+  state.geocoded.forEach(function(g){g.staticRouteOmitted=false});
+}
+
+/* ===== RE-CHECK ===== */
+async function runRecheck(){
+  var t=document.getElementById('recheckIn').value;
+  var e6=document.getElementById('e6'), out=document.getElementById('recheckOut');
+  e6.style.display='none'; out.style.display='none';
+  if(!t.trim()){e6.textContent='Paste a previously generated package first.';e6.style.display='block';return;}
+  var sm=t.match(/Subject location\(s\):\s*(.+)/);
+  var rm=t.match(/Search radius:\s*([\d.]+)/);
+  var am=t.match(/Asset class:\s*(.+)/);
+  var dm=t.match(/Generated:\s*([\d-]+)/);
+  if(!sm){e6.textContent='Could not find "Subject location(s):" in the pasted text — is this a package generated by this tool?';e6.style.display='block';return;}
+  var oldNames=[];
+  var re=/^\s*\d+\.\s+([A-Z0-9][^\n]{2,80})$/gm, m;
+  while((m=re.exec(t))!==null){var nm=m[1].replace(/\s*\[added manually\]\s*/,'').trim(); if(nm&&!/^(PROPERTY|Competitor|Summary|Data)/i.test(nm))oldNames.push(nm);}
+  state.addresses=sm[1].split('|').map(function(s){return s.trim()}).filter(Boolean);
+  state.radius=rm?parseFloat(rm[1]):5;
+  state.assetClass=am?am[1].trim():'Self-Storage';
+  state.geocoded=[]; state.competitors=[];
+  state.source=GKEY?'Google Places':'OpenStreetMap (fallback)';
+  var st={set textContent(v){out.textContent='Working… '+v;out.style.display='block'},get textContent(){return ''}};
+  try{
+    if(GKEY){await loadGoogle(GKEY); await searchGoogle(st);}
+    else{await searchOSM(st);}
+  }catch(err){e6.textContent='Re-check search failed: '+err.message;e6.style.display='block';return;}
+  var newNames=state.competitors.map(function(c){return c.name});
+  function norm(s){return s.toLowerCase().replace(/[^a-z0-9]/g,'')}
+  var newNorm=newNames.map(norm), oldNorm=oldNames.map(norm);
+  var still=[],gone=[],added=[];
+  oldNames.forEach(function(n,i){ (newNorm.some(function(x){return x.indexOf(oldNorm[i])>-1||oldNorm[i].indexOf(x)>-1})?still:gone).push(n); });
+  newNames.forEach(function(n,i){ if(!oldNorm.some(function(x){return x.indexOf(newNorm[i])>-1||newNorm[i].indexOf(x)>-1}))added.push(n); });
+  var L=[];
+  L.push('RE-CHECK REPORT — '+today());
+  L.push('Original package generated: '+(dm?dm[1]:'unknown date'));
+  L.push('Subject: '+state.addresses.join(' | ')+'   Radius: '+state.radius+' km   Source now: '+state.source);
+  L.push('');
+  L.push('COMPETITOR SET CHANGES');
+  L.push('Still present ('+still.length+'):'); still.forEach(function(n){L.push('  = '+n)});
+  L.push('No longer found ('+gone.length+') — may have closed, rebranded, or source coverage changed; verify manually:'); gone.length?gone.forEach(function(n){L.push('  - '+n)}):L.push('  none');
+  L.push('New since original ('+added.length+') — consider adding to the analysis:'); added.length?added.forEach(function(n){L.push('  + '+n)}):L.push('  none');
+  L.push('');
+  L.push('RATE VERIFICATION CHECKLIST');
+  L.push('Advertised rates change frequently. Re-confirm each competitor\'s rates at the links below, then regenerate the package if material changes are found:');
+  state.competitors.forEach(function(c){L.push('  [ ] '+c.name+' — '+(c.web||'find website via Google: '+c.name+' '+c.addr))});
+  L.push('');
+  L.push('LOCATION DATA REMINDER');
+  L.push('Census demographics update on 5-year cycles; development pipelines change quarterly. If the original package predates a census release or is older than ~90 days, refresh the location overview sources too.');
+  L.push('');
+  L.push('Recommendation: if the original package is older than 60-90 days or the competitor set changed above, re-run the full collection before using the data.');
+  out.textContent=L.join('\n'); out.style.display='block';
+}
+</script>
+<div id="reportView"></div>
+<div id="report" class="report"></div>
+</body>
+</html>
